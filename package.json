@@ -7,7 +7,7 @@
         "start": "node dist/server.js",
         "dev": "nodemon src/server.ts",
         "prebuild": "rimraf dist",
-        "build": "sucrase ./src d ./dist --transforms typescript,imports"
+        "build": "sucrase ./src -d ./dist --transforms typescript,imports"
     },
     "repository": {
         "type": "git",
