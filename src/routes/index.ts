@@ -9,16 +9,16 @@ const router = Router();
 //  AUTH
 router.post('/api/auth/login', AuthController.login);
 router.post('/api/auth/register', AuthController.register);
-router.delete('/api/auth/logout', AuthController.logout);
+// router.delete('/api/auth/logout', AuthController.logout);
 
 //  TICKETS
 router.get('/api/tickets', TicketsController.getAll);
 router.put('/api/tickets/:id/update', TicketsController.updateTicket);
-router.post('/api/tickets/create', TicketsController.createTicket); 
+router.post('/api/tickets/create', TicketsController.createTicket);
 router.get('/api/tickets/:id', TicketsController.getTicket);
 router.delete('/api/tickets/:id/remove', TicketsController.removeTicket);
-router.post('/api/tickets/:id/comment', TicketsController.createComment); 
-//  router.get('/api/tickets/:id/closed', TicketsController.markAsClosed); 
+router.post('/api/tickets/:id/comment', TicketsController.createComment);
+//  router.get('/api/tickets/:id/closed', TicketsController.markAsClosed);
 //  router.get('/api/tickets/closed', TicketsController.getAllClosed);
 
 //  USERS

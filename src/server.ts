@@ -1,7 +1,10 @@
-import express from 'express';
+// import express from 'express';
 import * as dotenv from 'dotenv';
+import App from './app';
 
-const app = express();
+// const app = express();
 dotenv.config();
 
-app.listen(process.env.PORT, () => console.log('running !'));
+const PORT: number = Number(process.env.PORT);
+
+App.run(PORT);

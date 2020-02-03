@@ -22,6 +22,7 @@
     "homepage": "https://github.com/am-sk3/ticket-manager-final-project#readme",
     "devDependencies": {
         "@types/body-parser": "^1.17.1",
+        "@types/cors": "^2.8.6",
         "@types/dotenv": "^8.2.0",
         "@types/ejs": "^3.0.0",
         "@types/eslint": "^6.1.7",
@@ -58,6 +59,7 @@
     },
     "dependencies": {
         "body-parser": "^1.19.0",
+        "cors": "^2.8.5",
         "dotenv": "^8.2.0",
         "ejs": "^3.0.1",
         "express": "^4.17.1",
