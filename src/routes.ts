@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import AuthController from '../controllers/auth.controller';
-import TicketsController from '../controllers/tickets.controller';
-import UsersController from '../controllers/users.controller';
-import CompanyController from '../controllers/company.controller';
+import AuthController from './controllers/auth.controller';
+import TicketsController from './controllers/tickets.controller';
+import UsersController from './controllers/users.controller';
+import CompanyController from './controllers/company.controller';
 
 const router = Router();
 
@@ -12,7 +12,7 @@ router.post('/api/auth/register', AuthController.register);
 router.delete('/api/auth/logout', AuthController.logout);
 
 //  TICKETS
-router.get('/api/tickets', TicketsController.getAll);
+router.get('api/tickets', TicketsController.getAll);
 router.put('/api/tickets/:id/update', TicketsController.updateTicket);
 router.post('/api/tickets/create', TicketsController.createTicket); 
 router.get('/api/tickets/:id', TicketsController.getTicket);
