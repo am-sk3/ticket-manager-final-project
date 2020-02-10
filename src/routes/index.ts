@@ -23,17 +23,17 @@ router.post('/api/tickets/:id/comment', TicketsController.createComment);
 
 //  USERS
 router.get('/api/users', UsersController.getAll);
-router.get('/api/users/:id', UsersController.getUser);
-router.post('/api/users/:id/create', UsersController.createUser);
-router.put('/api/users/:id/edit', UsersController.editUser);
-router.delete('/api/users/:id/remove', UsersController.removeUser);
+router.get('/api/users/:id', UsersController.getById);
+router.post('/api/users', UsersController.createUser);
+router.put('/api/users/:id', UsersController.editUser);
+router.delete('/api/users/:id', UsersController.removeUser);
 
 //  COMPANIES
 router.get('/api/companies', CompanyController.getAll);
-router.get('/api/companies/:id', CompanyController.getOne);
-router.post('/api/companies/create', CompanyController.create);
-router.put('/api/companies/:id/update', CompanyController.update);
-router.delete('/api/companies/:id/delete', CompanyController.delete);
+router.get('/api/companies/:id', CompanyController.getById);
+router.post('/api/companies', CompanyController.create);
+router.put('/api/companies/:id', CompanyController.update);
+router.delete('/api/companies/:id', CompanyController.delete);
 router.post('/api/companies/:id/user', CompanyController.addUser);
 router.delete('/api/companies/:id/user', CompanyController.deleteUser);
 

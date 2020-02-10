@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import AuthRepository from '../repositories/auth.repository';
-// import UsersRepository from '../repositories/users.repository';
 
 class AuthController {
     public static async login(req: Request, res: Response): Promise<Response> {
@@ -25,13 +24,9 @@ class AuthController {
 
             // Validacao de campos
 
-            const [userId] = await AuthRepository.register(
-                name,
-                email,
-                password
-            );
+            const userId = await AuthRepository.register(name, email, password);
 
-            if (userId > 0) {
+            if (userId) {
                 const token = await AuthRepository.attemptLogin(
                     email,
                     password
