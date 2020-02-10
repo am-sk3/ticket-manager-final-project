@@ -1,10 +1,6 @@
 // import { createHash } from 'crypto';
 import { sign } from 'jsonwebtoken';
-// import dotenv from 'dotenv';
-import queryBuilder from '../core/db';
-// import Token from '../models/Token';
-
-// dotenv.config();
+import Users from '../schemas/users.schema';
 
 const secret: string = 'testingkey';
 
@@ -13,9 +9,14 @@ export default class AuthRepository {
         email: string,
         password: string
     ): Promise<string> {
-        const user: any = await queryBuilder
-            .select()
-            .from('users')
+        // const user: any = await queryBuilder
+        //     .select()
+        //     .from('users')
+        //     .where({
+        //         email,
+        //         password
+        //     })
+        const user = await Users.query()
             .where({
                 email,
                 password
@@ -47,16 +48,21 @@ export default class AuthRepository {
         name: string,
         email: string,
         password: string
-    ): Promise<number[]> {
+    ): Promise<Users> {
         // password = createHash('sha256')            .update(password)            .digest('hex');
 
-        return queryBuilder
-            .insert({
-                email,
-                password,
-                name
-            })
-            .into('users');
+        return Users.query().insert({
+            email,
+            password,
+            name
+        });
+        // return queryBuilder
+        //     .insert({
+        //         email,
+        //         password,
+        //         name
+        //     })
+        //     .into('users');
     }
 
     // public static async getUserInfo(user: number): Promise<any> {

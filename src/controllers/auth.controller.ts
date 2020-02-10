@@ -23,13 +23,9 @@ class AuthController {
 
             // Validacao de campos
 
-            const [userId] = await AuthRepository.register(
-                name,
-                email,
-                password
-            );
+            const userId = await AuthRepository.register(name, email, password);
 
-            if (userId > 0) {
+            if (userId) {
                 const token = await AuthRepository.attemptLogin(
                     email,
                     password
