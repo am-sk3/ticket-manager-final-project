@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import TicketsRepository from "../repositories/tickets.repository";
 
+
 class TicketsController {
     
     public async getAll(req: Request, res: Response): Promise<Response> {
@@ -73,8 +74,23 @@ class TicketsController {
                     message: 'Ticket you want to comment does not exist!'
                 });
             }
+        }
+
+    public async closeTicket(req: Request, res: Response): Promise<Response> {
+        const { status } = req.body;
+        const { id } = req.params;
         
-    }
+        const ticketId = await TicketsRepository.markAsClosed(status, Number(id));
+
+            if (!ticketId) {
+                return res.status(404).json({
+                    message: 'Ticket you want to close does not exist!'
+                });
+            }
+
+        return res.json({ ticketId });
+    }    
+    
 }
 
 export default new TicketsController();

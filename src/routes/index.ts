@@ -17,8 +17,9 @@ router.put('/api/tickets/:id/update', TicketsController.updateTicket);
 router.post('/api/tickets/create', TicketsController.create);
 router.get('/api/tickets/:id', TicketsController.getTicket);
 router.put('/api/tickets/:id/remove', TicketsController.removeTicket);
-router.post('/api/tickets/:id/comment', TicketsController.createComment);
-//  router.get('/api/tickets/:id/closed', TicketsController.markAsClosed);
+router.post('/api/tickets/:id/comment', 
+TicketsController.createComment);
+ router.put('/api/tickets/:id/closed', TicketsController.closeTicket);
 //  router.get('/api/tickets/closed', TicketsController.getAllClosed);
 
 //  USERS

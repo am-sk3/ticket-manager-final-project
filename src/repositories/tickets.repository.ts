@@ -10,7 +10,7 @@ export default class TicketsRepository {
         .select('*')
         .from('tickets')
         .orderBy('creation_date', 'desc');
-        
+
         // return queryBuilder
         // .select('subject', 'content', 'status', 'companies.name' as 'companyName', 'users.name', 'tickets.creation_date')
         // .from('tickets')
@@ -62,5 +62,14 @@ export default class TicketsRepository {
             id_ticket: ticketId,
             content
         }).into('comments');
+    }
+
+    public static async markAsClosed(status: string, ticketId: number): Promise<number> {
+        return queryBuilder('tickets')
+            .where({id: ticketId})    
+            .update({
+                status: 'Closed',
+                closed_date: moment().format('YYYY-MM-DD h:mm:ss')
+            })
     }
 }
