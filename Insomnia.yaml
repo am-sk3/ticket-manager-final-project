@@ -1,523 +1,282 @@
 _type: export
 __export_format: 4
-__export_date: 2020-02-10T12:19:27.528Z
+__export_date: 2020-02-10T12:28:07.348Z
 __export_source: insomnia.desktop.app:v7.0.6
 resources:
-  - _id: req_ffe6fb92d76a4146a8bfbbac6ab24242
+  - _id: req_c7d31584d1d14c59b1a39f5a36249312
     authentication:
-      token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODM1NzgyOTIsInVzZXJuYW1lIjoiYW5kcmVAZXhhbXBsZS5jb20iLCJ1c2VyX2lkIjoyLCJpYXQiOjE1ODA4OTk4OTJ9.DdtflrRbSb8EkhvVInWZmgwNLflqiS1-9p_XDcKPcI0
+      token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODM1NzU4NzUsInVzZXJuYW1lIjoiZGFzYUBleGFtcGwuY29tIiwidXNlcl9pZCI6MSwiaWF0IjoxNTgwODk3NDc1fQ.ky53mAGagNXfRSZyfZ2QIey0SAo325nkc5zRvrsM2iY
       type: bearer
     body: {}
-    created: 1581071881335
+    created: 1580728991186
     description: ""
-    headers: []
+    headers:
+      - description: ""
+        id: pair_22abff527bed45dfae4421cdc3b9ca7b
+        name: ""
+        value: ""
     isPrivate: false
-    metaSortKey: -1581071881335
+    metaSortKey: -1580728991186
     method: GET
-    modified: 1581071926067
-    name: getAll
+    modified: 1580897497378
+    name: getAllTickets
     parameters: []
-    parentId: fld_6eaa5d002f69418db73a06310b5cc944
+    parentId: fld_d3ea2b3b695a48ae9cd396577a0a4702
     settingDisableRenderRequestBody: false
     settingEncodeUrl: true
     settingFollowRedirects: global
     settingRebuildPath: true
     settingSendCookies: true
     settingStoreCookies: true
-    url: http://localhost:3000/api/users/
+    url: http://localhost:3001/api/tickets
     _type: request
-  - _id: fld_6eaa5d002f69418db73a06310b5cc944
-    created: 1581071875875
+  - _id: fld_d3ea2b3b695a48ae9cd396577a0a4702
+    created: 1580728975061
     description: ""
     environment: {}
     environmentPropertyOrder: null
-    metaSortKey: -1581071875875
-    modified: 1581071875875
-    name: Users
-    parentId: wrk_d104fe94fb6f4ce6a23b122517cc4984
+    metaSortKey: -1580728975061
+    modified: 1580728975061
+    name: Ticket Manager
+    parentId: wrk_5601d12204a44351a8a050e748fcf9a2
     _type: request_group
-  - _id: wrk_d104fe94fb6f4ce6a23b122517cc4984
-    created: 1580732464519
+  - _id: wrk_5601d12204a44351a8a050e748fcf9a2
+    created: 1580297179263
     description: ""
-    modified: 1580732464519
-    name: ticket-manager
+    modified: 1580297179263
+    name: Insomnia
     parentId: null
     _type: workspace
-  - _id: req_2e7a28faba8848298745cc15fb3b8639
+  - _id: req_130c81649cd44143982c1e0f7eedacbd
     authentication:
-      token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODM1NzgyOTIsInVzZXJuYW1lIjoiYW5kcmVAZXhhbXBsZS5jb20iLCJ1c2VyX2lkIjoyLCJpYXQiOjE1ODA4OTk4OTJ9.DdtflrRbSb8EkhvVInWZmgwNLflqiS1-9p_XDcKPcI0
+      token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODM1NzU4NzUsInVzZXJuYW1lIjoiZGFzYUBleGFtcGwuY29tIiwidXNlcl9pZCI6MSwiaWF0IjoxNTgwODk3NDc1fQ.ky53mAGagNXfRSZyfZ2QIey0SAo325nkc5zRvrsM2iY
       type: bearer
-    body:
-      mimeType: application/x-www-form-urlencoded
-      params:
-        - description: ""
-          id: pair_9dd9b8af00d247fb8171b972f72f088b
-          name: name
-          value: 63lol35
-        - description: ""
-          id: pair_8749a7fd34b640b08f1fade676a6761d
-          name: email
-          value: tro44ll@lo5l.pt5
-        - description: ""
-          id: pair_66bec56df22e4214b50d6f73583d185f
-          name: password
-          value: "11111"
-        - description: ""
-          id: pair_5f8795f28249469790d84dd8466be9b8
-          name: islol
-          value: ooo
-    created: 1581075223278
+    body: {}
+    created: 1580901383481
     description: ""
     headers:
-      - id: pair_f7e59334ec5f46a9b4da4233f050261d
-        name: Content-Type
-        value: application/x-www-form-urlencoded
+      - description: ""
+        id: pair_22abff527bed45dfae4421cdc3b9ca7b
+        name: ""
+        value: ""
     isPrivate: false
-    metaSortKey: -1581028875785.25
-    method: POST
-    modified: 1581333359110
-    name: createUser
+    metaSortKey: -1580621857500.75
+    method: GET
+    modified: 1581329047445
+    name: getOneTicket
     parameters: []
-    parentId: fld_6eaa5d002f69418db73a06310b5cc944
+    parentId: fld_d3ea2b3b695a48ae9cd396577a0a4702
     settingDisableRenderRequestBody: false
     settingEncodeUrl: true
     settingFollowRedirects: global
     settingRebuildPath: true
     settingSendCookies: true
     settingStoreCookies: true
-    url: http://localhost:3000/api/users/
+    url: http://localhost:3001/api/tickets/1544
     _type: request
-  - _id: req_f2b2666e025b4d9abe0bc01770bea706
+  - _id: req_e5efa7054ce7427bb3b894ddf1ca82bf
     authentication:
-      token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODM1NzgyOTIsInVzZXJuYW1lIjoiYW5kcmVAZXhhbXBsZS5jb20iLCJ1c2VyX2lkIjoyLCJpYXQiOjE1ODA4OTk4OTJ9.DdtflrRbSb8EkhvVInWZmgwNLflqiS1-9p_XDcKPcI0
+      token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODM1NzU4NzUsInVzZXJuYW1lIjoiZGFzYUBleGFtcGwuY29tIiwidXNlcl9pZCI6MSwiaWF0IjoxNTgwODk3NDc1fQ.ky53mAGagNXfRSZyfZ2QIey0SAo325nkc5zRvrsM2iY
       type: bearer
     body:
       mimeType: application/x-www-form-urlencoded
       params:
+        - id: pair_1af5d6dea0374444a99f6f7ae11cf481
+          name: subject
+          value: more  tickets
         - description: ""
-          id: pair_9dd9b8af00d247fb8171b972f72f088b
-          name: name
-          value: lol
+          id: pair_e5ed23be09cd4d30b4266f88b70dbcbc
+          name: content
+          value: "content content content content content content content "
         - description: ""
-          id: pair_8749a7fd34b640b08f1fade676a6761d
-          name: email
-          value: troll@lol.pt
-        - description: ""
-          id: pair_66bec56df22e4214b50d6f73583d185f
-          name: password
-          value: "11111"
-        - description: ""
-          id: pair_5f8795f28249469790d84dd8466be9b8
-          name: idCompany
-          value: s
-    created: 1581164930495
+          id: pair_e13e9ea158d74267b3d3cd6ef6d4b00c
+          name: id_company
+          value: "3"
+    created: 1580899177655
     description: ""
     headers:
-      - id: pair_f7e59334ec5f46a9b4da4233f050261d
+      - id: pair_ae017915f6cc4ad1bf5d47dcae70e0c3
         name: Content-Type
         value: application/x-www-form-urlencoded
     isPrivate: false
-    metaSortKey: -1581007373010.375
+    metaSortKey: -1580514723815.5
+    method: POST
+    modified: 1581251639171
+    name: createTicket
+    parameters: []
+    parentId: fld_d3ea2b3b695a48ae9cd396577a0a4702
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingFollowRedirects: global
+    settingRebuildPath: true
+    settingSendCookies: true
+    settingStoreCookies: true
+    url: http://localhost:3001/api/tickets/create
+    _type: request
+  - _id: req_3cca1798b67c47b0820b150a21a15409
+    authentication:
+      token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODM1NzU4NzUsInVzZXJuYW1lIjoiZGFzYUBleGFtcGwuY29tIiwidXNlcl9pZCI6MSwiaWF0IjoxNTgwODk3NDc1fQ.ky53mAGagNXfRSZyfZ2QIey0SAo325nkc5zRvrsM2iY
+      type: bearer
+    body:
+      mimeType: application/x-www-form-urlencoded
+      params:
+        - id: pair_1af5d6dea0374444a99f6f7ae11cf481
+          name: content
+          value: comment ticket 10
+        - description: ""
+          id: pair_ed6bd51ff2734703aaae8d2277bde0f5
+          name: id_ticket
+          value: "10"
+    created: 1581076967399
+    description: ""
+    headers:
+      - id: pair_ae017915f6cc4ad1bf5d47dcae70e0c3
+        name: Content-Type
+        value: application/x-www-form-urlencoded
+    isPrivate: false
+    metaSortKey: -1580461156972.875
+    method: POST
+    modified: 1581336310560
+    name: createComment
+    parameters: []
+    parentId: fld_d3ea2b3b695a48ae9cd396577a0a4702
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingFollowRedirects: global
+    settingRebuildPath: true
+    settingSendCookies: true
+    settingStoreCookies: true
+    url: http://localhost:3001/api/tickets/10/comment
+    _type: request
+  - _id: req_199b49311efb479f868818b4025e6aaa
+    authentication:
+      token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODM1NzU4NzUsInVzZXJuYW1lIjoiZGFzYUBleGFtcGwuY29tIiwidXNlcl9pZCI6MSwiaWF0IjoxNTgwODk3NDc1fQ.ky53mAGagNXfRSZyfZ2QIey0SAo325nkc5zRvrsM2iY
+      type: bearer
+    body:
+      mimeType: application/x-www-form-urlencoded
+      params:
+        - id: pair_1af5d6dea0374444a99f6f7ae11cf481
+          name: subject
+          value: updated ticket  8
+        - description: ""
+          id: pair_e5ed23be09cd4d30b4266f88b70dbcbc
+          name: content
+          value: update content
+        - description: ""
+          id: pair_dfb7e97d6d5746fb85821f15c4323777
+          name: ""
+          value: ""
+    created: 1581071967602
+    description: ""
+    headers:
+      - id: pair_ae017915f6cc4ad1bf5d47dcae70e0c3
+        name: Content-Type
+        value: application/x-www-form-urlencoded
+    isPrivate: false
+    metaSortKey: -1580407590130.25
     method: PUT
-    modified: 1581333658408
-    name: updateUser
+    modified: 1581329044595
+    name: updateTicket
     parameters: []
-    parentId: fld_6eaa5d002f69418db73a06310b5cc944
+    parentId: fld_d3ea2b3b695a48ae9cd396577a0a4702
     settingDisableRenderRequestBody: false
     settingEncodeUrl: true
     settingFollowRedirects: global
     settingRebuildPath: true
     settingSendCookies: true
     settingStoreCookies: true
-    url: http://localhost:3000/api/users/9
+    url: http://localhost:3001/api/tickets/888/update
     _type: request
-  - _id: req_387db4d481c0429499204ff2699449f1
+  - _id: req_4e1555e0b3af4d0cb17affe6a01d0c4c
     authentication:
-      token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODM1NzgyOTIsInVzZXJuYW1lIjoiYW5kcmVAZXhhbXBsZS5jb20iLCJ1c2VyX2lkIjoyLCJpYXQiOjE1ODA4OTk4OTJ9.DdtflrRbSb8EkhvVInWZmgwNLflqiS1-9p_XDcKPcI0
-      type: bearer
-    body: {}
-    created: 1581332414960
-    description: ""
-    headers: []
-    isPrivate: false
-    metaSortKey: -1580996621622.9375
-    method: DELETE
-    modified: 1581332472478
-    name: deleteUser
-    parameters: []
-    parentId: fld_6eaa5d002f69418db73a06310b5cc944
-    settingDisableRenderRequestBody: false
-    settingEncodeUrl: true
-    settingFollowRedirects: global
-    settingRebuildPath: true
-    settingSendCookies: true
-    settingStoreCookies: true
-    url: http://localhost:3000/api/users/9
-    _type: request
-  - _id: req_06baffb0058f4a528ee61b6f1cf18918
-    authentication:
-      token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODM1NzgyOTIsInVzZXJuYW1lIjoiYW5kcmVAZXhhbXBsZS5jb20iLCJ1c2VyX2lkIjoyLCJpYXQiOjE1ODA4OTk4OTJ9.DdtflrRbSb8EkhvVInWZmgwNLflqiS1-9p_XDcKPcI0
-      type: bearer
-    body: {}
-    created: 1581071932166
-    description: ""
-    headers: []
-    isPrivate: false
-    metaSortKey: -1580985870235.5
-    method: GET
-    modified: 1581071935451
-    name: getById
-    parameters: []
-    parentId: fld_6eaa5d002f69418db73a06310b5cc944
-    settingDisableRenderRequestBody: false
-    settingEncodeUrl: true
-    settingFollowRedirects: global
-    settingRebuildPath: true
-    settingSendCookies: true
-    settingStoreCookies: true
-    url: http://localhost:3000/api/users/1
-    _type: request
-  - _id: req_9d1780499d004a86a010edfbe284b0a9
-    authentication:
-      token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODM1NzgyOTIsInVzZXJuYW1lIjoiYW5kcmVAZXhhbXBsZS5jb20iLCJ1c2VyX2lkIjoyLCJpYXQiOjE1ODA4OTk4OTJ9.DdtflrRbSb8EkhvVInWZmgwNLflqiS1-9p_XDcKPcI0
-      type: bearer
-    body: {}
-    created: 1580899859136
-    description: ""
-    headers: []
-    isPrivate: false
-    metaSortKey: -1580899859136
-    method: GET
-    modified: 1580901981473
-    name: getAll
-    parameters: []
-    parentId: fld_33ebc21597964776a3f68193610ab26a
-    settingDisableRenderRequestBody: false
-    settingEncodeUrl: true
-    settingFollowRedirects: global
-    settingRebuildPath: true
-    settingSendCookies: true
-    settingStoreCookies: true
-    url: http://localhost:3000/api/companies/
-    _type: request
-  - _id: fld_33ebc21597964776a3f68193610ab26a
-    created: 1580899845460
-    description: ""
-    environment: {}
-    environmentPropertyOrder: null
-    metaSortKey: -1580899845460
-    modified: 1580899845460
-    name: Companies
-    parentId: wrk_d104fe94fb6f4ce6a23b122517cc4984
-    _type: request_group
-  - _id: req_71c155d16c984c2e8472aff838d73558
-    authentication:
-      token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODM1NzgyOTIsInVzZXJuYW1lIjoiYW5kcmVAZXhhbXBsZS5jb20iLCJ1c2VyX2lkIjoyLCJpYXQiOjE1ODA4OTk4OTJ9.DdtflrRbSb8EkhvVInWZmgwNLflqiS1-9p_XDcKPcI0
-      type: bearer
-    body: {}
-    created: 1580901976021
-    description: ""
-    headers: []
-    isPrivate: false
-    metaSortKey: -1580878936801.625
-    method: GET
-    modified: 1581266932875
-    name: getById
-    parameters: []
-    parentId: fld_33ebc21597964776a3f68193610ab26a
-    settingDisableRenderRequestBody: false
-    settingEncodeUrl: true
-    settingFollowRedirects: global
-    settingRebuildPath: true
-    settingSendCookies: true
-    settingStoreCookies: true
-    url: "  http://localhost:3000/api/companies/1/"
-    _type: request
-  - _id: req_8432a1af2dbb4bf0875a8901356ed3d6
-    authentication:
-      token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODM1NzgyOTIsInVzZXJuYW1lIjoiYW5kcmVAZXhhbXBsZS5jb20iLCJ1c2VyX2lkIjoyLCJpYXQiOjE1ODA4OTk4OTJ9.DdtflrRbSb8EkhvVInWZmgwNLflqiS1-9p_XDcKPcI0
+      token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODM1NzU4NzUsInVzZXJuYW1lIjoiZGFzYUBleGFtcGwuY29tIiwidXNlcl9pZCI6MSwiaWF0IjoxNTgwODk3NDc1fQ.ky53mAGagNXfRSZyfZ2QIey0SAo325nkc5zRvrsM2iY
       type: bearer
     body:
       mimeType: application/x-www-form-urlencoded
       params:
         - description: ""
-          id: pair_28675f66aaa04911a73efb67ec87308a
-          name: name
-          value: Europcar  2
-        - description: ""
-          id: pair_a37ae2b951824cc0a460bfe491fb4d99
+          id: pair_dfb7e97d6d5746fb85821f15c4323777
           name: ""
           value: ""
-    created: 1580901991245
+    created: 1581334735228
     description: ""
     headers:
-      - id: pair_114dbdf2d93741d3984ca6fbfd8f9593
+      - id: pair_ae017915f6cc4ad1bf5d47dcae70e0c3
         name: Content-Type
         value: application/x-www-form-urlencoded
     isPrivate: false
-    metaSortKey: -1580858014467.25
-    method: POST
-    modified: 1581268026453
-    name: create
-    parameters: []
-    parentId: fld_33ebc21597964776a3f68193610ab26a
-    settingDisableRenderRequestBody: false
-    settingEncodeUrl: true
-    settingFollowRedirects: global
-    settingRebuildPath: true
-    settingSendCookies: true
-    settingStoreCookies: true
-    url: http://localhost:3000/api/companies
-    _type: request
-  - _id: req_04252bb51e5a4df8926047fa0a76de79
-    authentication:
-      token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODM1NzgyOTIsInVzZXJuYW1lIjoiYW5kcmVAZXhhbXBsZS5jb20iLCJ1c2VyX2lkIjoyLCJpYXQiOjE1ODA4OTk4OTJ9.DdtflrRbSb8EkhvVInWZmgwNLflqiS1-9p_XDcKPcI0
-      type: bearer
-    body:
-      mimeType: application/x-www-form-urlencoded
-      params:
-        - description: ""
-          id: pair_28675f66aaa04911a73efb67ec87308a
-          name: name
-          value: Europcar - Martinique2222
-        - description: ""
-          id: pair_a37ae2b951824cc0a460bfe491fb4d99
-          name: ""
-          value: ""
-    created: 1580903224624
-    description: ""
-    headers:
-      - id: pair_114dbdf2d93741d3984ca6fbfd8f9593
-        name: Content-Type
-        value: application/x-www-form-urlencoded
-    isPrivate: false
-    metaSortKey: -1580837092132.875
+    metaSortKey: -1580380806708.9375
     method: PUT
-    modified: 1581268941637
-    name: update
+    modified: 1581334855627
+    name: closeTicket
     parameters: []
-    parentId: fld_33ebc21597964776a3f68193610ab26a
+    parentId: fld_d3ea2b3b695a48ae9cd396577a0a4702
     settingDisableRenderRequestBody: false
     settingEncodeUrl: true
     settingFollowRedirects: global
     settingRebuildPath: true
     settingSendCookies: true
     settingStoreCookies: true
-    url: http://localhost:3000/api/companies/16
+    url: http://localhost:3001/api/tickets/344/closed
     _type: request
-  - _id: req_60927556ab9f46b89e9566014de7fec1
+  - _id: req_78c90ee4ec804f2f8851e14b9ca4eedc
     authentication:
-      token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODM1NzgyOTIsInVzZXJuYW1lIjoiYW5kcmVAZXhhbXBsZS5jb20iLCJ1c2VyX2lkIjoyLCJpYXQiOjE1ODA4OTk4OTJ9.DdtflrRbSb8EkhvVInWZmgwNLflqiS1-9p_XDcKPcI0
+      token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODM1NzU4NzUsInVzZXJuYW1lIjoiZGFzYUBleGFtcGwuY29tIiwidXNlcl9pZCI6MSwiaWF0IjoxNTgwODk3NDc1fQ.ky53mAGagNXfRSZyfZ2QIey0SAo325nkc5zRvrsM2iY
       type: bearer
     body:
       mimeType: application/x-www-form-urlencoded
       params:
         - description: ""
-          id: pair_28675f66aaa04911a73efb67ec87308a
-          name: userId
-          value: "1"
-        - description: ""
-          id: pair_150c00c2a5ff4bcfa67c0a377f8209df
+          id: pair_dfb7e97d6d5746fb85821f15c4323777
           name: ""
           value: ""
-        - description: ""
-          id: pair_a37ae2b951824cc0a460bfe491fb4d99
-          name: ""
-          value: ""
-    created: 1580904698632
+    created: 1581076103111
     description: ""
     headers:
-      - id: pair_114dbdf2d93741d3984ca6fbfd8f9593
+      - id: pair_ae017915f6cc4ad1bf5d47dcae70e0c3
         name: Content-Type
         value: application/x-www-form-urlencoded
     isPrivate: false
-    metaSortKey: -1580831861549.2812
-    method: POST
-    modified: 1581271789229
-    name: addUser
+    metaSortKey: -1580354023287.625
+    method: PUT
+    modified: 1581328964671
+    name: deleteTicket
     parameters: []
-    parentId: fld_33ebc21597964776a3f68193610ab26a
+    parentId: fld_d3ea2b3b695a48ae9cd396577a0a4702
     settingDisableRenderRequestBody: false
     settingEncodeUrl: true
     settingFollowRedirects: global
     settingRebuildPath: true
     settingSendCookies: true
     settingStoreCookies: true
-    url: http://localhost:3000/api/companies/16/user
+    url: http://localhost:3001/api/tickets/5545/remove
     _type: request
-  - _id: req_0e4898009dae4a49a20a6c5ba4b5b3a7
-    authentication:
-      token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODM1NzgyOTIsInVzZXJuYW1lIjoiYW5kcmVAZXhhbXBsZS5jb20iLCJ1c2VyX2lkIjoyLCJpYXQiOjE1ODA4OTk4OTJ9.DdtflrRbSb8EkhvVInWZmgwNLflqiS1-9p_XDcKPcI0
-      type: bearer
-    body:
-      mimeType: application/x-www-form-urlencoded
-      params:
-        - description: ""
-          id: pair_28675f66aaa04911a73efb67ec87308a
-          name: userId
-          value: "1"
-        - description: ""
-          id: pair_a37ae2b951824cc0a460bfe491fb4d99
-          name: ""
-          value: ""
-        - description: ""
-          id: pair_805fc527f98f4cbfa4b3a54e8439072d
-          name: ""
-          value: ""
-    created: 1580904706095
-    description: ""
-    headers:
-      - id: pair_114dbdf2d93741d3984ca6fbfd8f9593
-        name: Content-Type
-        value: application/x-www-form-urlencoded
-    isPrivate: false
-    metaSortKey: -1580829246257.4844
-    method: DELETE
-    modified: 1581272951863
-    name: deleteUser
-    parameters: []
-    parentId: fld_33ebc21597964776a3f68193610ab26a
-    settingDisableRenderRequestBody: false
-    settingEncodeUrl: true
-    settingFollowRedirects: global
-    settingRebuildPath: true
-    settingSendCookies: true
-    settingStoreCookies: true
-    url: http://localhost:3000/api/companies/16/user
-    _type: request
-  - _id: req_65fe6e2412854bb7ade68c47d93cadd8
-    authentication:
-      token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODM1NzgyOTIsInVzZXJuYW1lIjoiYW5kcmVAZXhhbXBsZS5jb20iLCJ1c2VyX2lkIjoyLCJpYXQiOjE1ODA4OTk4OTJ9.DdtflrRbSb8EkhvVInWZmgwNLflqiS1-9p_XDcKPcI0
-      type: bearer
-    body:
-      mimeType: application/x-www-form-urlencoded
-      params:
-        - description: ""
-          id: pair_28675f66aaa04911a73efb67ec87308a
-          name: name
-          value: Europcar - Martinique
-        - description: ""
-          id: pair_a37ae2b951824cc0a460bfe491fb4d99
-          name: ""
-          value: ""
-    created: 1580903480396
-    description: ""
-    headers:
-      - id: pair_114dbdf2d93741d3984ca6fbfd8f9593
-        name: Content-Type
-        value: application/x-www-form-urlencoded
-    isPrivate: false
-    metaSortKey: -1580826630965.6875
-    method: DELETE
-    modified: 1581268821287
-    name: delete
-    parameters: []
-    parentId: fld_33ebc21597964776a3f68193610ab26a
-    settingDisableRenderRequestBody: false
-    settingEncodeUrl: true
-    settingFollowRedirects: global
-    settingRebuildPath: true
-    settingSendCookies: true
-    settingStoreCookies: true
-    url: http://localhost:3000/api/companies/17
-    _type: request
-  - _id: req_bb49c50c4cb641748ecb1547402d258e
-    authentication: {}
-    body:
-      mimeType: application/x-www-form-urlencoded
-      params:
-        - description: ""
-          id: pair_7f8b05767d2f4bd6b7c5ac365b7f16ed
-          name: email
-          value: andre@example.com
-        - description: ""
-          id: pair_5e73ef281ef04fda851dc72e0970e59a
-          name: password
-          value: "12345"
-    created: 1580732472303
-    description: ""
-    headers:
-      - id: pair_055c576d05da49b797038a0ff2edeee4
-        name: Content-Type
-        value: application/x-www-form-urlencoded
-    isPrivate: false
-    metaSortKey: -1580732480461
-    method: POST
-    modified: 1581333859388
-    name: login
-    parameters: []
-    parentId: fld_104c31e72bed4cc09cb869d30de225fc
-    settingDisableRenderRequestBody: false
-    settingEncodeUrl: true
-    settingFollowRedirects: global
-    settingRebuildPath: true
-    settingSendCookies: true
-    settingStoreCookies: true
-    url: http://localhost:3000/api/auth/login
-    _type: request
-  - _id: fld_104c31e72bed4cc09cb869d30de225fc
-    created: 1580732480435
-    description: ""
-    environment: {}
-    environmentPropertyOrder: null
-    metaSortKey: -1580732480436
-    modified: 1580732480435
-    name: Auth
-    parentId: wrk_d104fe94fb6f4ce6a23b122517cc4984
-    _type: request_group
-  - _id: req_1fb57da6084847e4bd949e3b732f1f03
-    authentication: {}
-    body:
-      mimeType: application/x-www-form-urlencoded
-      params:
-        - description: ""
-          id: pair_f0704f4bd4644c89a14d5215b4eae535
-          name: email
-          value: example@email.com
-        - description: ""
-          id: pair_e7733d14d3874b38a8cbd5b4a90c96bf
-          name: name
-          value: new user
-        - description: ""
-          id: pair_196e7bb2ffb7463f84a7f02a1ff50be4
-          name: password
-          value: password
-    created: 1580732497225
-    description: ""
-    headers:
-      - id: pair_4b5f0b82b0ad4778b4c78cbfb68c6bc0
-        name: Content-Type
-        value: application/x-www-form-urlencoded
-    isPrivate: false
-    metaSortKey: -1580732480411
-    method: POST
-    modified: 1580767592587
-    name: register
-    parameters: []
-    parentId: fld_104c31e72bed4cc09cb869d30de225fc
-    settingDisableRenderRequestBody: false
-    settingEncodeUrl: true
-    settingFollowRedirects: global
-    settingRebuildPath: true
-    settingSendCookies: true
-    settingStoreCookies: true
-    url: http://localhost:3000/api/auth/register
-    _type: request
-  - _id: env_f630b898e8c1bf56255c240dd3268da476368768
+  - _id: env_1dfb90b377aaced6c994950d452c76418bee2d16
     color: null
-    created: 1580732464624
+    created: 1580297179528
     data: {}
     dataPropertyOrder: null
     isPrivate: false
-    metaSortKey: 1580732464624
-    modified: 1580732464624
+    metaSortKey: 1580297179528
+    modified: 1580297179528
     name: Base Environment
-    parentId: wrk_d104fe94fb6f4ce6a23b122517cc4984
+    parentId: wrk_5601d12204a44351a8a050e748fcf9a2
     _type: environment
-  - _id: jar_f630b898e8c1bf56255c240dd3268da476368768
+  - _id: jar_1dfb90b377aaced6c994950d452c76418bee2d16
     cookies: []
-    created: 1580732464636
-    modified: 1580732464636
+    created: 1580297179747
+    modified: 1580297179747
     name: Default Jar
-    parentId: wrk_d104fe94fb6f4ce6a23b122517cc4984
+    parentId: wrk_5601d12204a44351a8a050e748fcf9a2
     _type: cookie_jar
+  - _id: env_2b0cecfb742e478d9154c7de76c684f6
+    color: null
+    created: 1580298951606
+    data: {}
+    dataPropertyOrder: null
+    isPrivate: false
+    metaSortKey: 1580298951606
+    modified: 1580300391287
+    name: Development
+    parentId: env_1dfb90b377aaced6c994950d452c76418bee2d16
+    _type: environment
