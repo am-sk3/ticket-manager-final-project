@@ -1,5 +1,5 @@
 class CompanyController {
-
+    
     public async getAll() {
         return console.log('test');
     }

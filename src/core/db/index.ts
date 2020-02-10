@@ -1,10 +1,10 @@
-import * as dotenv from "dotenv";
-import knex from "knex";
+import * as dotenv from 'dotenv';
+import knex from 'knex';
 
 dotenv.config();
 
-export const queryBuilder = knex({
-    client: "mysql2",
+const queryBuilder = knex({
+    client: 'mysql2',
     connection: {
         host: process.env.DB_HOST,
         user: process.env.DB_USER,
@@ -12,3 +12,5 @@ export const queryBuilder = knex({
         database: process.env.DB_NAME
     }
 });
+
+export default queryBuilder;
