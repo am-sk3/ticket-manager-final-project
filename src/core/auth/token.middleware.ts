@@ -28,6 +28,13 @@ export default class TokenMiddleware {
         try {
             const token = req.headers.authorization.split('Bearer ')[1];
             res.locals.decodedToken = verify(token, secret);
+
+            // await this.verifyAdmin(req, res, res.locals.decodedToken);
+            // return res.status(403).json({
+            //             code: 403,
+            //             message: 'Forbidden'
+            //         });
+
             return next();
         } catch (err) {
             return res.status(403).json({
@@ -36,4 +43,12 @@ export default class TokenMiddleware {
             });
         }
     }
+
+    // public static async verifyAdmin(
+    //     req: Request,
+    //     res: Response,
+    //     next: NextFunction
+    // ): Promise<any> {
+
+    // }
 }

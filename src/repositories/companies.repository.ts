@@ -25,6 +25,15 @@ export default class CompaniesRepository {
                         'is_enabled'
                     );
                 }
+            })
+            .withGraphFetched('tickets(showOpen)')
+            .modifiers({
+                showOpen(builder) {
+                    builder.select('id', 'subject', 'content').where({
+                        id_company: companyId,
+                        status: 'Open'
+                    });
+                }
             });
         // console.log();
         return query;

@@ -62,4 +62,15 @@ export default class UsersRepository {
                 isEnabled: false
             });
     }
+
+    public static async changePassword(
+        userId: number,
+        newPassword: string
+    ): Promise<any> {
+        return Users.query()
+            .findById(userId)
+            .patch({
+                password: newPassword
+            });
+    }
 }

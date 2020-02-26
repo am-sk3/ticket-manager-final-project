@@ -19,20 +19,22 @@ export default class AuthRepository {
         const user = await Users.query()
             .where({
                 email,
-                password
+                password,
+                is_enabled: true
             })
             // 'email', '=', email)
             // .andWhere('password', '=', createHash('sha256').update(password).digest('hex'))
             // .andWhere('password', '=', password)
             .first();
-        console.log(user);
+        // console.log(user);
         return new Promise((resolve, reject) => {
             if (user) {
                 const token = sign(
                     {
                         exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 31,
                         username: user.email,
-                        user_id: user.id
+                        user_id: user.id,
+                        isAdmin: user.isAdmin
                     },
                     secret
                 );

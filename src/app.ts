@@ -47,7 +47,7 @@ class App {
 
     private routes(): void {
         this.express.use(express.static(`${__dirname}/../public`));
-        //Middlewares
+        // Middlewares
         this.express.use(TokenMiddleWare.tokenVerify);
         this.express.use(router);
     }
