@@ -2,7 +2,6 @@
 import { Request, Response } from 'express';
 import UsersRepository from '../repositories/users.repository';
 import User from '../models/User';
-import { cat } from 'shelljs';
 
 class UsersController {
     public async getAll(req: Request, res: Response): Promise<Response> {
