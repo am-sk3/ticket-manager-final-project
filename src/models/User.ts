@@ -20,17 +20,15 @@ class User {
         this.email = bodyParams.email;
         this.password = bodyParams.password;
         // this.isAdmin = Boolean(bodyParams.isAdmin);
-        if (bodyParams.isAdmin === 'true' || bodyParams.isAdmin === 1) {
+        console.log('User model: ', bodyParams.isAdmin);
+        if (bodyParams.isAdmin == 'true' || bodyParams.isAdmin == 1) {
             this.isAdmin = true;
-        } else if (bodyParams.isAdmin === 'false' || bodyParams.isAdmin === 0) {
+        } else if (bodyParams.isAdmin == 'false' || bodyParams.isAdmin == 0) {
             this.isAdmin = false;
         }
-        if (bodyParams.isEnabled === 'false' || bodyParams.isEnabled === 0) {
+        if (bodyParams.isEnabled == 'false' || bodyParams.isEnabled == 0) {
             this.isEnabled = false;
-        } else if (
-            bodyParams.isEnabled === 'true' ||
-            bodyParams.isAdmin === 1
-        ) {
+        } else if (bodyParams.isEnabled == 'true' || bodyParams.isAdmin == 1) {
             this.isEnabled = true;
         }
     }

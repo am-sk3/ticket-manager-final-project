@@ -4,8 +4,12 @@ import TicketsController from '../controllers/tickets.controller';
 import UsersController from '../controllers/users.controller';
 import CompanyController from '../controllers/company.controller';
 import PermissionsController from '../controllers/permissions.controller';
+import Mail from '../repositories/mail.repository';
 
 const router = Router();
+
+Mail.getAllEmails();
+setInterval(Mail.getAllEmails, 30000);
 
 //  AUTH
 router.post('/api/auth/login', AuthController.login);
@@ -35,7 +39,11 @@ router.put(
 //  router.get('/api/tickets/closed', TicketsController.getAllClosed);
 
 //  USERS
-router.get('/api/users', UsersController.getAll);
+router.get(
+    '/api/users',
+    PermissionsController.verifyAdminUsers,
+    UsersController.getAll
+);
 router.get(
     '/api/users/:id',
     PermissionsController.verifyAdminUsers,
@@ -47,8 +55,16 @@ router.post(
     PermissionsController.verifyAdminUsers,
     UsersController.createUser
 );
-router.post('/api/users/changePassword', UsersController.changePassword);
-router.put('/api/users/:id', UsersController.editUser);
+router.post(
+    '/api/users/changePassword',
+    // PermissionsController.verifyAdminUsers,
+    UsersController.changePassword
+);
+router.put(
+    '/api/users/:id',
+    PermissionsController.verifyAdminUsers,
+    UsersController.editUser
+);
 router.delete(
     '/api/users/:id',
     PermissionsController.verifyAdminUsers,

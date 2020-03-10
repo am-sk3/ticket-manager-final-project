@@ -4,6 +4,11 @@ class AuthController {
     public static async login(req: Request, res: Response): Promise<Response> {
         try {
             const { email, password } = req.body;
+            if (!email || !password) {
+                return res.status(402).json({
+                    message: 'email and password are required for login'
+                });
+            }
             const token = await AuthRepository.attemptLogin(email, password);
 
             return res.json({ token });
@@ -57,6 +62,5 @@ class AuthController {
     //     return res.json();
     // }
 }
-
 
 export default AuthController;

@@ -117,6 +117,42 @@ export default class CompaniesRepository {
             .where({ id: userId });
     }
 
+    public static async searchByUser(
+        companyId: number,
+        userId: number
+    ): Promise<Boolean> {
+        const company = await Companies.query().findById(companyId);
+
+        const user = await company
+            .$relatedQuery('users')
+            .where({ id_user: userId })
+            .first();
+        // console.log('returning from here');
+
+        if (user) {
+            return true;
+        }
+        return false;
+
+        //     // const knex = Users.knex();
+
+        //     // return knex.raw(
+        //     //     `SELECT
+        //     //         users_companies.id_company
+        //     //      FROM
+        //     //         users
+        //     //      INNER JOIN users_companies ON users_companies.id_user = users.id
+        //     //      WHERE
+        //     //         users_companies.id_company = ${companyId}
+        //     //         AND users.id = ${userId}`
+        //     // );
+
+        //     // return Users.relatedQuery('companies')
+        //     //     .for(userId)
+        //     //     .where('id_company', companyId);
+        //     return null;
+    }
+
     // public static async getUserById(
     //     companyId: number,
     //     userId: number
