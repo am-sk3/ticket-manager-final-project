@@ -1,21 +1,26 @@
 import { Model, snakeCaseMappers } from 'objection';
 import Users from './users.schema';
-import Companies from './companies.schema';
 
 class Tickets extends Model {
     id?: number;
 
     subject?: string;
 
-    content?: boolean;
+    content?: string;
+
+    creationDate?: Date;
 
     status?: string;
+
+    idUser?: number;
+
+    closedDate?: Date;
 
     idCompany?: number;
 
     isDeleted?: boolean;
 
-    lastUpdateUser?: string;
+    lastUpdateUser?: number;
 
     lastUpdate?: Date;
 
@@ -25,22 +30,29 @@ class Tickets extends Model {
 
     static columnNameMappers = snakeCaseMappers();
 
+    static get jsonSchema() {
+        return {
+            type: 'object',
+            required: ['subject', 'content', 'idUser', 'idCompany'],
+            properties: {
+                subject: { type: 'string' },
+                content: { type: 'string' },
+                status: { type: 'string' },
+                idUser: { type: 'number'},
+                idCompany: { type: 'number'},
+                lastUpdateUser: { type: 'number'}
+            }
+        };
+    }
+
     static get relationMappings() {
         return {
             user: {
                 relation: Model.BelongsToOneRelation,
                 modelClass: Users,
                 join: {
-                    from: 'tickets.id_user',
+                    from: 'ticket.id_user',
                     to: 'users.id'
-                }
-            },
-            company: {
-                relation: Model.BelongsToOneRelation,
-                modelClass: Companies,
-                join: {
-                    from: 'tickets.id_company',
-                    to: 'companies.id'
                 }
             }
         };
