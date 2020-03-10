@@ -1,22 +1,24 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-restricted-syntax */
-// import imapClient from 'emailjs-imap-client';
 import mailparser, { EmailAddress } from 'mailparser';
 import nodemailer from 'nodemailer';
+import * as dotenv from 'dotenv';
 import UsersRepository from './users.repository';
 import TicketsRepository from './tickets.repository';
 import CompaniesRepository from './companies.repository';
 
+dotenv.config();
+
 const ImapClient: any = require('emailjs-imap-client').default;
 
 const testAccount = {
-    user: 'olaf.monahan95@ethereal.email',
-    email: 'olaf.monahan95@ethereal.email',
-    pass: 'vzUcnzgma22jmAa58X',
-    host: 'smtp.ethereal.email',
+    user: process.env.MAIL_USER,
+    email: process.env.MAIL_EMAIL,
+    pass: process.env.MAIL_PASS,
+    host: process.env.MAIL_HOST,
     port: 587,
     tls: true,
-    name: 'Olaf'
+    name: 'Ticket-Manager'
 };
 
 export default class MailRepository {
