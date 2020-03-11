@@ -1,7 +1,6 @@
 import moment = require('moment');
 
 class Ticket {
-    
     id?: number;
 
     subject?: string;
@@ -38,10 +37,9 @@ class Ticket {
 
         // moment().format('YYYY-MM-DD h:mm:ss');
         if (Number.isInteger(bodyParams.idCompany) === true) {
-            this.idCompany = Number(bodyParams.idCompany)
+            this.idCompany = Number(bodyParams.idCompany);
         }
     }
-
 }
 
 export default Ticket;

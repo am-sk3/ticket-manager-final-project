@@ -6,6 +6,7 @@ import * as dotenv from 'dotenv';
 import UsersRepository from './users.repository';
 import TicketsRepository from './tickets.repository';
 import CompaniesRepository from './companies.repository';
+import Ticket from '../models/Ticket';
 
 dotenv.config();
 
@@ -105,7 +106,7 @@ export default class MailRepository {
                         );
                     }
 
-                    console.log(userCheck);
+                    // console.log(userCheck);
 
                     if (userCheck) {
                         // * company: emailCheck.companies[0].idCompany
@@ -117,27 +118,23 @@ export default class MailRepository {
                         try {
                             comment = await MailRepository.parseComment(
                                 message,
-                                userCheck,
-                                emailId
+                                userCheck
                             );
                         } catch (error) {
                             console.log('error while parsing comment');
                         }
 
-                        console.log(comment);
+                        // console.log(comment);
                         if (comment) {
                             //* success, we need to break the loop
-                            try {
-                                await client.deleteMessages('INBOX', emailId, {
-                                    byUid: true
-                                });
-                            } catch (error) {
-                                //* ignore if error happens. will retry again in the next cycle (will probably create duplicate comment)
-                            }
+
+                            await client.deleteMessages('INBOX', emailId, {
+                                byUid: true
+                            });
                             continue;
                         }
                         // }
-                        console.log(userCheck);
+                        // console.log(userCheck);
                         let ticketParse;
                         try {
                             console.log('start parsing new ticket');
@@ -146,18 +143,21 @@ export default class MailRepository {
                                 userCheck
                             );
                         } catch (error) {
-                            console.log('error creating new ticket');
+                            console.log(
+                                'error creating new ticket: ',
+                                error.message
+                            );
                         }
 
-                        console.log(ticketParse);
+                        // console.log(ticketParse);
 
                         if (ticketParse) {
                             console.log(
                                 'Ticket created! Number: ',
-                                ticketParse
+                                ticketParse.id
                             );
                             await MailRepository.replyMail(
-                                ticketParse,
+                                ticketParse.id,
                                 from,
                                 message.subject
                             );
@@ -183,8 +183,7 @@ export default class MailRepository {
 
     public static async parseComment(
         message: any,
-        userData: any,
-        emailId: any
+        userData: any
     ): Promise<Boolean> {
         console.log('parsing comment');
         const searchString: RegExp = /(?:[ticket:[0-9]*])/gm;
@@ -208,31 +207,35 @@ export default class MailRepository {
                 const ticketVerify = await TicketsRepository.getOneTicket(
                     Number(ticketNumber[0])
                 );
-
+                // console.log(ticketVerify);
                 if (ticketVerify) {
                     // * We have to insert as comment
-
                     // * Verify if the new user belongs to the company that opened the ticket
                     const companyVerify = await CompaniesRepository.searchByUser(
-                        ticketVerify.id_company,
+                        Number(ticketVerify.idCompany),
                         userData.id
                     );
-
-                    console.log(companyVerify);
-
+                    // console.log(companyVerify);
                     if (companyVerify) {
                         // } else {
                         console.log('user verified. processing reply');
-                        const comment = await TicketsRepository.comment(
-                            message.text,
-                            emailId,
-                            Number(ticketNumber[0])
-                        );
 
-                        console.log(
-                            'New comment created for ticket ',
-                            ticketNumber[0]
-                        );
+                        try {
+                            const comment = await TicketsRepository.comment(
+                                message.text,
+                                userData.id,
+                                Number(ticketNumber[0])
+                            );
+                            console.log(
+                                'New comment created for ticket ',
+                                ticketNumber[0]
+                            );
+                        } catch (error) {
+                            console.log(
+                                'error creating comment: ',
+                                error.message
+                            );
+                        }
 
                         return true;
                     }
@@ -252,12 +255,15 @@ export default class MailRepository {
     ): Promise<any> {
         console.log('parsing new ticket');
 
-        const ticket = await TicketsRepository.createTicket(
-            message.subject,
-            message.text,
-            userCheck.id,
-            userCheck.companies[0].idCompany
-        );
+        const newTicket = new Ticket({
+            subject: message.subject,
+            content: message.text,
+            idUser: userCheck.id,
+            idCompany: userCheck.companies[0].idCompany
+        });
+
+        // console.log(newTicket);
+        const ticket = await TicketsRepository.createTicket(newTicket);
 
         return ticket;
     }
