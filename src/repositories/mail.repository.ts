@@ -37,7 +37,7 @@ export default class MailRepository {
             }
         });
 
-        const mailBody = await transporter.sendMail({
+        await transporter.sendMail({
             from: `"Ticket Manager" <${testAccount.email}`, // sender address
             to: mailTo, // list of receivers
             subject: `"${subject} - [ticket:${ticketNumber}]"`, // Subject line
@@ -58,6 +58,7 @@ export default class MailRepository {
 
         const checkMail = async () => {
             console.log('Checking for emails...');
+
             try {
                 await client.connect();
 
@@ -70,122 +71,106 @@ export default class MailRepository {
                 ]);
 
                 // console.log(messages);
-                for (var object of messages) {
+                //* Start verification for all messages
+
+                for (const mail of messages) {
                     const message = await mailparser.simpleParser(
-                        object['body[]']
+                        mail['body[]']
                     );
 
-                    const emailId: string = object.uid; // console.log(object.uid);
+                    const emailId: string = mail.uid; // console.log(mail.uid);
                     const from = message.from.value[0];
 
-                    const emailCheck = await UsersRepository.byEmail(
-                        from.address
-                    );
-
-                    if (from.address == testAccount.email) {
+                    // * deletes all messages that start with the same system email
+                    if (from.address === testAccount.email) {
                         console.log('deleting system message');
-                        await client.deleteMessages('INBOX', emailId, {
-                            byUid: true
-                        });
+                        try {
+                            await client.deleteMessages('INBOX', emailId, {
+                                byUid: true
+                            });
+                        } catch (error) {
+                            console.log('error deleting messages');
+                        }
+                        continue;
                     }
-                    // console.log(emailCheck, from);
 
-                    if (emailCheck && emailCheck.companies.length > 0) {
+                    // * this contains the user ID + companies that it belongs to
+                    let userCheck;
+                    try {
+                        userCheck = await UsersRepository.byEmail(from.address);
+                    } catch (error) {
+                        console.log(
+                            'error connecting to the DB. Error Details: ',
+                            error.message
+                        );
+                    }
+
+                    console.log(userCheck);
+
+                    if (userCheck) {
                         // * company: emailCheck.companies[0].idCompany
                         // * id: emailCheck.id
-                        // let ticket: any;
+
                         console.log('start parsing');
-                        const regex = /(?:\[ticket:[0-9]*\])/gm;
-                        if (message.subject.match(regex)) {
+                        //* test for comment parsing
+                        let comment;
+                        try {
+                            comment = await MailRepository.parseComment(
+                                message,
+                                userCheck,
+                                emailId
+                            );
+                        } catch (error) {
+                            console.log('error while parsing comment');
+                        }
+
+                        console.log(comment);
+                        if (comment) {
+                            //* success, we need to break the loop
+                            try {
+                                await client.deleteMessages('INBOX', emailId, {
+                                    byUid: true
+                                });
+                            } catch (error) {
+                                //* ignore if error happens. will retry again in the next cycle (will probably create duplicate comment)
+                            }
+                            continue;
+                        }
+                        // }
+                        console.log(userCheck);
+                        let ticketParse;
+                        try {
+                            console.log('start parsing new ticket');
+                            ticketParse = await MailRepository.parseNewTicket(
+                                message,
+                                userCheck
+                            );
+                        } catch (error) {
+                            console.log('error creating new ticket');
+                        }
+
+                        console.log(ticketParse);
+
+                        if (ticketParse) {
                             console.log(
-                                'reply detected. Lets start the verification for the ticket'
+                                'Ticket created! Number: ',
+                                ticketParse
+                            );
+                            await MailRepository.replyMail(
+                                ticketParse,
+                                from,
+                                message.subject
                             );
 
-                            let ticketString: string[] | null;
+                            await client.deleteMessages('INBOX', emailId, {
+                                byUid: true
+                            });
 
-                            ticketString = message.subject.match(regex);
-
-                            if (
-                                ticketString !== null &&
-                                ticketString[0] !== undefined
-                            ) {
-                                let ticketNumber: string[] | null;
-
-                                ticketNumber = ticketString[0].match(/\d+/);
-
-                                if (ticketNumber !== null) {
-                                    // console.log(ticketNumber[0]);
-
-                                    const ticketVerify = await TicketsRepository.getOneTicket(
-                                        Number(ticketNumber[0])
-                                    );
-
-                                    if (ticketVerify) {
-                                        // * We have to insert as comment
-
-                                        // * Verify if the new user belongs to the company that opened the ticket
-                                        const companyVerify = await CompaniesRepository.searchByUser(
-                                            ticketVerify.id_company,
-                                            emailCheck.id
-                                        );
-
-                                        console.log(companyVerify);
-
-                                        if (companyVerify) {
-                                            // } else {
-                                            console.log(
-                                                'user verified. processing reply'
-                                            );
-                                            const comment = await TicketsRepository.comment(
-                                                message.text,
-                                                emailCheck.id,
-                                                Number(ticketNumber[0])
-                                            );
-
-                                            console.log(
-                                                'New comment created for ticket ',
-                                                ticketNumber[0]
-                                            );
-                                            await client.deleteMessages(
-                                                'INBOX',
-                                                emailId,
-                                                {
-                                                    byUid: true
-                                                }
-                                            );
-                                            continue;
-                                        }
-                                    } else {
-                                        console.log(
-                                            'ticket verification failed, skipping to creation...'
-                                        );
-                                    }
-                                }
-                            }
+                            console.log('delete message: ', emailId);
                         }
-
-                        const ticket = await TicketsRepository.createTicket(
-                            message.subject,
-                            message.text,
-                            emailCheck.id,
-                            emailCheck.companies[0].idCompany
-                        );
-                        if (ticket) {
-                            console.log('Ticket created! Number: ', ticket);
-                        }
-                        await MailRepository.replyMail(
-                            ticket,
-                            from,
-                            message.subject
-                        );
-
-                        await client.deleteMessages('INBOX', emailId, {
-                            byUid: true
-                        });
                     }
-                    // console.log('delete message: ', emailId);
                 }
-                // console.log(messages.flags);
+
                 await client.close();
             } catch (error) {
                 console.log('error: ', error);
@@ -194,5 +179,86 @@ export default class MailRepository {
         };
 
         checkMail();
+    }
+
+    public static async parseComment(
+        message: any,
+        userData: any,
+        emailId: any
+    ): Promise<Boolean> {
+        console.log('parsing comment');
+        const searchString: RegExp = /(?:[ticket:[0-9]*])/gm;
+
+        //* split the string by match
+        const ticketString: string[] | null = message.subject.match(
+            searchString
+        );
+
+        if (ticketString !== null && ticketString[0] !== undefined) {
+            //* matches the ticket number from the string
+            const ticketNumber: string[] | null = ticketString[0].match(/\d+/);
+
+            if (ticketNumber !== null) {
+                console.log(
+                    'reply detected. Lets start the verification for the ticket'
+                );
+                // console.log(ticketNumber[0]);
+
+                //* search for the ticket number in the DB
+                const ticketVerify = await TicketsRepository.getOneTicket(
+                    Number(ticketNumber[0])
+                );
+
+                if (ticketVerify) {
+                    // * We have to insert as comment
+
+                    // * Verify if the new user belongs to the company that opened the ticket
+                    const companyVerify = await CompaniesRepository.searchByUser(
+                        ticketVerify.id_company,
+                        userData.id
+                    );
+
+                    console.log(companyVerify);
+
+                    if (companyVerify) {
+                        // } else {
+                        console.log('user verified. processing reply');
+                        const comment = await TicketsRepository.comment(
+                            message.text,
+                            emailId,
+                            Number(ticketNumber[0])
+                        );
+
+                        console.log(
+                            'New comment created for ticket ',
+                            ticketNumber[0]
+                        );
+
+                        return true;
+                    }
+                } else {
+                    console.log(
+                        'ticket verification failed, skipping to creation...'
+                    );
+                }
+            }
+        }
+        return false;
+    }
+
+    public static async parseNewTicket(
+        message: any,
+        userCheck: any
+    ): Promise<any> {
+        console.log('parsing new ticket');
+
+        const ticket = await TicketsRepository.createTicket(
+            message.subject,
+            message.text,
+            userCheck.id,
+            userCheck.companies[0].idCompany
+        );
+
+        return ticket;
     }
 }

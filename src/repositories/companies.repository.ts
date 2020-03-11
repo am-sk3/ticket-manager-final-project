@@ -1,5 +1,6 @@
 // import { Model } from 'objection';
 // import queryBuilder from '../core/db';
+import Users from '../schemas/users.schema';
 import Companies from '../schemas/companies.schema';
 
 // import companyController from 'controllers/company.controller';
@@ -133,26 +134,71 @@ export default class CompaniesRepository {
             return true;
         }
         return false;
-
-        //     // const knex = Users.knex();
-
-        //     // return knex.raw(
-        //     //     `SELECT
-        //     //         users_companies.id_company
-        //     //      FROM
-        //     //         users
-        //     //      INNER JOIN users_companies ON users_companies.id_user = users.id
-        //     //      WHERE
-        //     //         users_companies.id_company = ${companyId}
-        //     //         AND users.id = ${userId}`
-        //     // );
-
-        //     // return Users.relatedQuery('companies')
-        //     //     .for(userId)
-        //     //     .where('id_company', companyId);
-        //     return null;
     }
 
+    public static async byEmail(userEmail: string): Promise<Companies> {
+        // console.log('inside');
+        const user = await Users.query()
+            .where({ email: userEmail })
+            .first();
+        // console.log(user);
+        const company = await user
+            .$relatedQuery('companies')
+            .select()
+            .first();
+        // console.log(user);
+        return company;
+    }
+
+    public static async byUserId(userId: number): Promise<Companies[]> {
+        return Companies.query()
+            .select()
+            .where({ id_user: userId });
+    }
+
+    public static async byUserIdFirst(userId: number): Promise<Companies> {
+        const user = await Users.query()
+            .select('id')
+            .findById(userId);
+
+        const company = user.$relatedQuery('companies').first();
+        return company;
+        // return Companies.query()
+        //     .select('id')
+
+        //     .where({ id_user: userId })
+        //     .first();
+
+        //     return Companies.relatedQuery('users').for()
+        /*
+
+            .withGraphFetched('users(selectInfo)')
+            .modifiers({
+                selectInfo(builder) {
+                    builder.select(
+                        'id',
+                        'name',
+                        'email',
+                        'created_at',
+                        'is_enabled'
+                    );
+                }
+            })
+            */
+    }
+    /*
+        return Users.query()
+            .select('id')
+            .where({ email: userEmail })
+            .withGraphFetched('companies(users)')
+            .modifiers({
+                users(builder) {
+                    builder.select('id_company').first();
+                }
+            })
+            .first();
+     
+     */
     // public static async getUserById(
     //     companyId: number,
     //     userId: number

@@ -2,6 +2,7 @@
 import { Request, Response } from 'express';
 import UsersRepository from '../repositories/users.repository';
 import User from '../models/User';
+import CompaniesRepository from '../repositories/companies.repository';
 
 class UsersController {
     public async getAll(req: Request, res: Response): Promise<Response> {
@@ -107,14 +108,14 @@ class UsersController {
         // res.status(204).json();
     }
 
-    public async getByEmail(email: string): Promise<any> {
-        try {
-            const query = await UsersRepository.byEmail(email);
-            return query;
-        } catch (error) {
-            return false;
-        }
-    }
+    // public async getByEmail(email: string): Promise<any> {
+    //     try {
+    //         const query = await UsersRepository.byEmail(email);
+    //         return query;
+    //     } catch (error) {
+    //         return false;
+    //     }
+    // }
 }
 
 export default new UsersController();

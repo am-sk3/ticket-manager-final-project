@@ -18,6 +18,8 @@ class Users extends Model {
 
     isEnabled?: boolean;
 
+    companies?: Companies;
+
     static get tableName() {
         return 'users';
     }

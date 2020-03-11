@@ -74,30 +74,30 @@ export default class UsersRepository {
             });
     }
 
-    public static async byEmail(userEmail: string): Promise<any> {
-        // const query = Companies.query()
-        // .where({ id: companyId })
-        // .withGraphFetched('users(selectInfo)')
-        // .modifiers({
-        //     selectInfo(builder) {
-        //         builder.select(
-        //             'id',
-        //             'name',
-        //             'email',
-        //             'created_at',
-        //             'is_enabled'
-        //         );
-        //     }
-        // })
-        // .withGraphFetched('tickets(showOpen)')
-        // .modifiers({
-        //     showOpen(builder) {
-        //         builder.select('id', 'subject', 'content').where({
-        //             id_company: companyId,
-        //             status: 'Open'
-        //         });
-        //     }
-        // });
+    public static async byEmail(userEmail: string): Promise<Users> {
+        //     // const query = Companies.query()
+        //     // .where({ id: companyId })
+        //     // .withGraphFetched('users(selectInfo)')
+        //     // .modifiers({
+        //     //     selectInfo(builder) {
+        //     //         builder.select(
+        //     //             'id',
+        //     //             'name',
+        //     //             'email',
+        //     //             'created_at',
+        //     //             'is_enabled'
+        //     //         );
+        //     //     }
+        //     // })
+        //     // .withGraphFetched('tickets(showOpen)')
+        //     // .modifiers({
+        //     //     showOpen(builder) {
+        //     //         builder.select('id', 'subject', 'content').where({
+        //     //             id_company: companyId,
+        //     //             status: 'Open'
+        //     //         });
+        //     //     }
+        //     // });
 
         return Users.query()
             .select('id')
@@ -105,12 +105,27 @@ export default class UsersRepository {
             .withGraphFetched('companies(users)')
             .modifiers({
                 users(builder) {
-                    builder.select('id_company').first();
+                    builder.select('id_company');
                 }
             })
             .first();
     }
 
+    /*
+    
+    const company = await Companies.query().findById(companyId);
+
+        const user = await company
+            .$relatedQuery('users')
+            .where({ id_user: userId })
+            .first();
+        // console.log('returning from here');
+
+        if (user) {
+            return true;
+        }
+        return false;
+    */
     // public static async searchByCompany(
     //     companyId: number,
     //     userId: number
