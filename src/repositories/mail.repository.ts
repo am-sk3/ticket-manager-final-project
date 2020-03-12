@@ -7,6 +7,7 @@ import UsersRepository from './users.repository';
 import TicketsRepository from './tickets.repository';
 import CompaniesRepository from './companies.repository';
 import Ticket from '../models/Ticket';
+import Users from '../schemas/users.schema';
 
 dotenv.config();
 
@@ -57,128 +58,127 @@ export default class MailRepository {
             useSecureTransport: true
         });
 
-        const checkMail = async () => {
-            console.log('Checking for emails...');
+        // const checkMail = async () => {
+        console.log('Checking for emails...');
 
-            try {
-                await client.connect();
+        try {
+            await client.connect();
 
-                const messages = await client.listMessages('INBOX', '1:1000', [
-                    'uid',
-                    'flags',
-                    'envelope',
-                    'bodystructure',
-                    'body.peek[]'
-                ]);
+            const messages = await client.listMessages('INBOX', '1:1000', [
+                'uid',
+                'flags',
+                'envelope',
+                'bodystructure',
+                'body.peek[]'
+            ]);
 
-                // console.log(messages);
-                //* Start verification for all messages
+            // console.log(messages);
+            //* Start verification for all messages
 
-                for (const mail of messages) {
-                    const message = await mailparser.simpleParser(
-                        mail['body[]']
+            for (const mail of messages) {
+                const message = await mailparser.simpleParser(mail['body[]']);
+
+                const emailId: string = mail.uid; // console.log(mail.uid);
+                const from = message.from.value[0];
+
+                // * deletes all messages that start with the same system email
+                if (from.address === testAccount.email) {
+                    console.log('deleting system message');
+                    try {
+                        await client.deleteMessages('INBOX', emailId, {
+                            byUid: true
+                        });
+                    } catch (error) {
+                        console.log('error deleting messages');
+                    }
+                    continue;
+                }
+
+                // * this contains the user ID + companies that it belongs to
+                let userCheck = new Users();
+                try {
+                    userCheck = await UsersRepository.byEmail(from.address);
+                } catch (error) {
+                    console.log(
+                        'error connecting to the DB. Error Details: ',
+                        error.message
                     );
+                }
 
-                    const emailId: string = mail.uid; // console.log(mail.uid);
-                    const from = message.from.value[0];
+                console.log(userCheck);
 
-                    // * deletes all messages that start with the same system email
-                    if (from.address === testAccount.email) {
-                        console.log('deleting system message');
-                        try {
-                            await client.deleteMessages('INBOX', emailId, {
-                                byUid: true
-                            });
-                        } catch (error) {
-                            console.log('error deleting messages');
-                        }
-                        continue;
+                if (userCheck) {
+                    // * company: emailCheck.companies[0].idCompany
+                    // * id: emailCheck.id
+
+                    console.log('start parsing');
+                    //* test for comment parsing
+                    let comment;
+                    try {
+                        comment = await this.parseComment(message, userCheck);
+                    } catch (error) {
+                        console.log('error while parsing comment');
                     }
 
-                    // * this contains the user ID + companies that it belongs to
-                    let userCheck;
+                    // console.log(comment);
+                    if (comment) {
+                        //* success, we need to break the loop
+
+                        await client.deleteMessages('INBOX', emailId, {
+                            byUid: true
+                        });
+                        continue;
+                    }
+                    // }
+                    // console.log(userCheck);
+                    // if (userCheck === undefined) {
+                    //     console.log(
+                    //         'user does not have companies associated. Skipping...'
+                    //     );
+                    //     continue;
+                    // }
+                    // console.log(userCheck);
+                    let ticketParse;
                     try {
-                        userCheck = await UsersRepository.byEmail(from.address);
+                        console.log('start parsing new ticket');
+                        ticketParse = await this.parseNewTicket(
+                            message,
+                            userCheck
+                        );
                     } catch (error) {
                         console.log(
-                            'error connecting to the DB. Error Details: ',
+                            'error creating new ticket: ',
                             error.message
                         );
                     }
 
-                    // console.log(userCheck);
+                    // console.log(ticketParse);
 
-                    if (userCheck) {
-                        // * company: emailCheck.companies[0].idCompany
-                        // * id: emailCheck.id
+                    if (ticketParse) {
+                        console.log('Ticket created! Number: ', ticketParse.id);
+                        await this.replyMail(
+                            ticketParse.id,
+                            from,
+                            message.subject
+                        );
 
-                        console.log('start parsing');
-                        //* test for comment parsing
-                        let comment;
-                        try {
-                            comment = await MailRepository.parseComment(
-                                message,
-                                userCheck
-                            );
-                        } catch (error) {
-                            console.log('error while parsing comment');
-                        }
+                        await client.deleteMessages('INBOX', emailId, {
+                            byUid: true
+                        });
 
-                        // console.log(comment);
-                        if (comment) {
-                            //* success, we need to break the loop
-
-                            await client.deleteMessages('INBOX', emailId, {
-                                byUid: true
-                            });
-                            continue;
-                        }
-                        // }
-                        // console.log(userCheck);
-                        let ticketParse;
-                        try {
-                            console.log('start parsing new ticket');
-                            ticketParse = await MailRepository.parseNewTicket(
-                                message,
-                                userCheck
-                            );
-                        } catch (error) {
-                            console.log(
-                                'error creating new ticket: ',
-                                error.message
-                            );
-                        }
-
-                        // console.log(ticketParse);
-
-                        if (ticketParse) {
-                            console.log(
-                                'Ticket created! Number: ',
-                                ticketParse.id
-                            );
-                            await MailRepository.replyMail(
-                                ticketParse.id,
-                                from,
-                                message.subject
-                            );
-
-                            await client.deleteMessages('INBOX', emailId, {
-                                byUid: true
-                            });
-
-                            console.log('delete message: ', emailId);
-                        }
+                        console.log('delete message: ', emailId);
                     }
                 }
-
-                await client.close();
-            } catch (error) {
-                console.log('error: ', error);
             }
-            console.log('email check finish.');
-        };
 
-        checkMail();
+            await client.close();
+        } catch (error) {
+            console.log('error: ', error);
+        }
+        console.log('email check finish.');
+        // };
+
+        // checkMail();
     }
 
     public static async parseComment(
@@ -259,7 +259,7 @@ export default class MailRepository {
             subject: message.subject,
             content: message.text,
             idUser: userCheck.id,
-            idCompany: userCheck.companies[0].idCompany
+            idCompany: userCheck.idCompany
         });
 
         // console.log(newTicket);

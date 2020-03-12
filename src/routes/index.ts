@@ -9,7 +9,9 @@ import Mail from '../repositories/mail.repository';
 const router = Router();
 
 Mail.getAllEmails();
-setInterval(Mail.getAllEmails, 30000);
+setInterval(async () => {
+    await Mail.getAllEmails();
+}, 30000);
 
 //  AUTH
 router.post('/api/auth/login', AuthController.login);
