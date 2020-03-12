@@ -1,31 +1,32 @@
-import queryBuilder from '../core/db';
 import moment = require('moment');
 import Tickets from '../schemas/tickets.schema';
 import Ticket from '../models/Ticket';
 import Comments from '../schemas/comments.schema';
+import Users from '../schemas/users.schema';
 
 export default class TicketsRepository {
-    public static async getAllTickets(
-        search?: string,
-        page?: number
-    ): Promise<Tickets[]> {
-        const query = Tickets.query().select(
-            'id',
-            'subject',
-            'content',
-            'status',
-            'creation_date',
-            'id_user',
-            'id_company',
-            'is_deleted',
-            'last_update_user',
-            'last_update'
-        );
+    public static async getAllTickets(): Promise<Tickets[]> {
+        return Tickets.query().select();
+    }
 
+    public static async getAllTicketsByUser(userId: number): Promise<any> {
+        const query = await Tickets.query()
+            .select()
+            .where('is_deleted', false)
+            .whereIn(
+                'id_company',
+                Users.relatedQuery('companies')
+                    .select('id')
+                    .for(userId)
+            );
+        // console.log(query);
         return query;
     }
 
-    public static async getOneTicket(ticketId: number): Promise<Tickets> {
+    public static async getOneTicket(
+        ticketId: number,
+        isDeleted?: false
+    ): Promise<Tickets> {
         return Tickets.query()
             .select(
                 'id',
@@ -39,7 +40,11 @@ export default class TicketsRepository {
                 'last_update_user',
                 'last_update'
             )
-            .where('id', '=', ticketId)
+            .where({
+                id: ticketId,
+                isDeleted
+                // 'id', '=', ticketId,'is_deleted'
+            })
             .first();
     }
 

@@ -11,7 +11,7 @@ const router = Router();
 Mail.getAllEmails();
 setInterval(async () => {
     await Mail.getAllEmails();
-}, 30000);
+}, 120000);
 
 //  AUTH
 router.post('/api/auth/login', AuthController.login);
@@ -21,7 +21,7 @@ router.post('/api/auth/register', AuthController.register);
 //  TICKETS
 router.get(
     '/api/tickets',
-    PermissionsController.verifyAdminUsers,
+    // PermissionsController.verifyAdminUsers,
     TicketsController.getAll
 );
 router.get('/api/tickets/:id', TicketsController.getTicket);

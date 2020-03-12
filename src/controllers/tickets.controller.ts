@@ -5,7 +5,15 @@ import { now } from 'moment';
 
 class TicketsController {
     public async getAll(req: Request, res: Response): Promise<Response> {
-        const tickets = await TicketsRepository.getAllTickets();
+        let tickets;
+        if (res.locals.decodedToken.isAdmin === false) {
+            tickets = await TicketsRepository.getAllTicketsByUser(
+                Number(res.locals.decodedToken.user_id)
+            );
+        } else {
+            tickets = await TicketsRepository.getAllTickets();
+        }
+
         return res.status(200).json(tickets);
     }
 
@@ -46,11 +54,9 @@ class TicketsController {
             );
 
             if (query === 1) {
-                return res
-                    .status(200)
-                    .json({
-                        message: [`Ticket ${Number(req.params.id)} updated`]
-                    });
+                return res.status(200).json({
+                    message: [`Ticket ${Number(req.params.id)} updated`]
+                });
             }
             return res.status(200).json({
                 message: 'Ticket not updated!'
@@ -129,11 +135,9 @@ class TicketsController {
             );
 
             if (query === 1) {
-                return res
-                    .status(200)
-                    .json({
-                        message: [`Ticket ${Number(req.params.id)} closed`]
-                    });
+                return res.status(200).json({
+                    message: [`Ticket ${Number(req.params.id)} closed`]
+                });
             }
             return res.status(200).json({
                 message: 'Ticket not closed!'

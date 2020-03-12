@@ -1,5 +1,6 @@
 import { Model, snakeCaseMappers } from 'objection';
 import Users from './users.schema';
+import Company from './companies.schema';
 
 class Tickets extends Model {
     id?: number;
@@ -38,9 +39,9 @@ class Tickets extends Model {
                 subject: { type: 'string' },
                 content: { type: 'string' },
                 status: { type: 'string' },
-                idUser: { type: 'number'},
-                idCompany: { type: 'number'},
-                lastUpdateUser: { type: 'number'}
+                idUser: { type: 'number' },
+                idCompany: { type: 'number' },
+                lastUpdateUser: { type: 'number' }
             }
         };
     }
@@ -53,6 +54,14 @@ class Tickets extends Model {
                 join: {
                     from: 'ticket.id_user',
                     to: 'users.id'
+                }
+            },
+            companies: {
+                relation: Model.BelongsToOneRelation,
+                modelClass: Company,
+                join: {
+                    from: 'ticket.id_company',
+                    to: 'companies.id'
                 }
             }
         };
