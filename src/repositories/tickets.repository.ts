@@ -2,7 +2,7 @@ import queryBuilder from '../core/db';
 import moment = require('moment');
 import Tickets from '../schemas/tickets.schema';
 import Ticket from '../models/Ticket';
-import { DateTime } from 'mssql';
+import Comments from '../schemas/comments.schema';
 
 export default class TicketsRepository {
     public static async getAllTickets(
@@ -74,14 +74,13 @@ export default class TicketsRepository {
         content: string,
         userId: number,
         ticketId: number
-    ): Promise<number[]> {
-        return queryBuilder
-            .insert({
-                id_user: userId,
-                id_ticket: ticketId,
-                content
-            })
-            .into('comments');
+    ): Promise<Comments> {
+        this.update({ status: 'Open' }, ticketId);
+        return Comments.query().insert({
+            idUser: userId,
+            idTicket: ticketId,
+            content
+        });
         //  update tickets last_updated date and user
     }
 

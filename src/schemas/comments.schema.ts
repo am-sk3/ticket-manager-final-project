@@ -3,13 +3,13 @@ import Users from './users.schema';
 import Tickets from './tickets.schema';
 
 class Comments extends Model {
-    // id?: number;
+    id?: number;
 
-    // subject?: string;
+    idUser?: number;
 
-    // content?: boolean;
+    content?: string;
 
-    // status?: string;
+    idTicket?: number;
 
     // idCompany?: number;
 
