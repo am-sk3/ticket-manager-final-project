@@ -33,7 +33,16 @@ class TicketsController {
 
     public async getTicket(req: Request, res: Response): Promise<Response> {
         const { id } = req.params;
-        const ticket = await TicketsRepository.getOneTicket(Number(id));
+
+        let ticket;
+        if (res.locals.decodedToken.isAdmin == false) {
+            ticket = await TicketsRepository.getOneTicketUser(
+                Number(id),
+                Number(res.locals.decodedToken.user_id)
+            );
+        } else {
+            ticket = await TicketsRepository.getOneTicket(Number(id));
+        }
 
         if (!ticket) {
             return res.status(404).json({

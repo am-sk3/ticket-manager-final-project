@@ -11,7 +11,18 @@ export default class TicketsRepository {
 
     public static async getAllTicketsByUser(userId: number): Promise<any> {
         const query = await Tickets.query()
-            .select()
+            .select(
+                'id',
+                'subject',
+                'content',
+                'id_user',
+                'creation_date',
+                'status',
+                'closed_date',
+                'id_company',
+                'last_update_user',
+                'last_update'
+            )
             .where('is_deleted', false)
             .whereIn(
                 'id_company',
@@ -25,26 +36,46 @@ export default class TicketsRepository {
 
     public static async getOneTicket(
         ticketId: number,
-        isDeleted?: false
+        isDeleted: boolean = false
     ): Promise<Tickets> {
+        return Tickets.query()
+            .select()
+            .where({
+                id: ticketId
+                // 'id', '=', ticketId,'is_deleted'
+            })
+            .andWhere('is_deleted', isDeleted)
+            .first();
+    }
+
+    public static async getOneTicketUser(
+        ticketId: number,
+        userId: number
+    ): Promise<Tickets> {
+        console.log(ticketId, userId);
         return Tickets.query()
             .select(
                 'id',
                 'subject',
                 'content',
-                'status',
-                'creation_date',
                 'id_user',
+                'creation_date',
+                'status',
+                'closed_date',
                 'id_company',
-                'is_deleted',
                 'last_update_user',
                 'last_update'
             )
             .where({
-                id: ticketId,
-                isDeleted
-                // 'id', '=', ticketId,'is_deleted'
+                id: ticketId
             })
+            .andWhere('is_deleted', false)
+            .whereIn(
+                'id_company',
+                Users.relatedQuery('companies')
+                    .select('id')
+                    .for(userId)
+            )
             .first();
     }
 
