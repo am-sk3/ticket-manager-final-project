@@ -52,7 +52,6 @@ export default class TicketsRepository {
         ticketId: number,
         userId: number
     ): Promise<Tickets> {
-        console.log(ticketId, userId);
         return Tickets.query()
             .select(
                 'id',

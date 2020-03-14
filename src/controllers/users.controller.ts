@@ -23,6 +23,13 @@ class UsersController {
 
     public async getById(req: Request, res: Response): Promise<Response> {
         const { id } = req.params;
+
+        if (res.locals.decodedToken.isAdmin == false) {
+            if (id != res.locals.decodedToken.user_id) {
+                return res.status(403).json({ message: 'Forbidden' });
+            }
+        }
+
         try {
             const query = await UsersRepository.byId(Number(id));
             if (res.locals.decodedToken.isAdmin === false) {
