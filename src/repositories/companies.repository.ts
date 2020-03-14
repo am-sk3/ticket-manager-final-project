@@ -103,9 +103,10 @@ export default class CompaniesRepository {
     }
 
     public static async byUserId(userId: number): Promise<Companies[]> {
-        return Companies.query()
-            .select()
-            .where({ id_user: userId });
+        const user = await Users.query()
+            .select('id')
+            .findById(userId);
+        return user.$relatedQuery('companies');
     }
 
     public static async byUserIdFirst(userId: number): Promise<Companies> {

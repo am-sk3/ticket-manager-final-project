@@ -56,7 +56,6 @@ class UsersController {
 
         try {
             const query = await UsersRepository.create(user);
-            console.log(query);
             return res.status(201).json({ message: 'user created ' });
         } catch (error) {
             if (error.code == 'ECONNREFUSED') {
