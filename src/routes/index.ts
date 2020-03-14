@@ -25,6 +25,7 @@ router.get(
     TicketsController.getAll
 );
 router.get('/api/tickets/:id', TicketsController.getTicket);
+router.get('/api/tickets/:id/company', TicketsController.ticketsByCompany);
 router.put('/api/tickets/:id/update', TicketsController.updateTicket);
 router.post('/api/tickets/create', TicketsController.create);
 router.put(

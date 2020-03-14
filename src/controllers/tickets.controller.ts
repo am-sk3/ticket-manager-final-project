@@ -9,6 +9,20 @@ class TicketsController {
         return res.status(200).json(tickets);
     }
 
+    public async ticketsByCompany(req: Request, res: Response): Promise<Response> {
+        const { idCompany } = req.params; 
+        
+        const myTickets = await TicketsRepository.
+        getTicketsByCompany(Number(idCompany));
+        
+        if (!idCompany) {
+            return res.status(404).json({
+                message: 'Company doesn\'t exist!'
+            });
+        }
+        return res.status(200).json(myTickets);
+    }
+
     public async create(req: Request, res: Response): Promise<Response> {
         const ticket = new Ticket(req.body);
         ticket.idUser = res.locals.decodedToken.user_id;

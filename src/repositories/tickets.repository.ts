@@ -43,6 +43,24 @@ export default class TicketsRepository {
             .first();
     }
 
+    public static async getTicketsByCompany(idCompany: number): Promise<Tickets> {
+        return Tickets.query()
+            .select(
+                'id',
+                'subject',
+                'content',
+                'status',
+                'creation_date',
+                'id_user',
+                'id_company',
+                'is_deleted',
+                'last_update_user',
+                'last_update'
+            )
+            .where('id_company', '=', idCompany)
+            .first();
+    }
+
     public static async createTicket(ticket: Ticket): Promise<Tickets> {
         return Tickets.query().insert(ticket);
     }
