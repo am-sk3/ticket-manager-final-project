@@ -52,8 +52,7 @@ router.get(
 );
 router.get(
     '/api/users/:id',
-    PermissionsController.verifyAdminUsers,
-
+    // PermissionsController.verifyAdminUsers,
     UsersController.getById
 );
 router.post(
