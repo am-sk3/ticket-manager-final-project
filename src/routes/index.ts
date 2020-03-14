@@ -1,4 +1,5 @@
 import { Response, Request, Router, NextFunction } from 'express';
+import dotenv from 'dotenv';
 import AuthController from '../controllers/auth.controller';
 import TicketsController from '../controllers/tickets.controller';
 import UsersController from '../controllers/users.controller';
@@ -6,19 +7,22 @@ import CompanyController from '../controllers/company.controller';
 import PermissionsController from '../controllers/permissions.controller';
 import Mail from '../repositories/mail.repository';
 
+dotenv.config();
 const router = Router();
 
-Mail.getAllEmails();
-setInterval(async () => {
-    await Mail.getAllEmails();
-}, 120000);
+if (process.env.MAILENABLED === 'true') {
+    Mail.getAllEmails();
+    setInterval(async () => {
+        await Mail.getAllEmails();
+    }, 120000);
+}
 
-//  AUTH
+// ! AUTH
 router.post('/api/auth/login', AuthController.login);
 router.post('/api/auth/register', AuthController.register);
 // router.delete('/api/auth/logout', AuthController.logout);
 
-//  TICKETS
+//!  TICKETS
 router.get(
     '/api/tickets',
     // PermissionsController.verifyAdminUsers,
@@ -40,7 +44,7 @@ router.put(
 );
 //  router.get('/api/tickets/closed', TicketsController.getAllClosed);
 
-//  USERS
+// ! USERS
 router.get(
     '/api/users',
     PermissionsController.verifyAdminUsers,
@@ -73,10 +77,10 @@ router.delete(
     UsersController.removeUser
 );
 
-//  COMPANIES
+// ! COMPANIES
 router.get(
     '/api/companies',
-    PermissionsController.verifyAdminUsers,
+    // PermissionsController.verifyAdminUsers,
     CompanyController.getAll
 );
 router.get(
