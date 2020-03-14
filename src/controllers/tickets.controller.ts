@@ -5,16 +5,28 @@ import { now } from 'moment';
 
 class TicketsController {
     public async getAll(req: Request, res: Response): Promise<Response> {
-        let tickets;
-        if (res.locals.decodedToken.isAdmin === false) {
-            tickets = await TicketsRepository.getAllTicketsByUser(
-                Number(res.locals.decodedToken.user_id)
-            );
-        } else {
-            tickets = await TicketsRepository.getAllTickets();
-        }
+        try {
+            let tickets;
+            if (res.locals.decodedToken.isAdmin === false) {
+                tickets = await TicketsRepository.getAllTicketsByUser(
+                    Number(res.locals.decodedToken.user_id)
+                );
+            } else {
+                tickets = await TicketsRepository.getAllTickets();
+            }
 
-        return res.status(200).json(tickets);
+            return res.status(200).json(tickets);
+        } catch (error) {
+            if (error.code == 'ECONNREFUSED') {
+                error.message = 'Error connecting to DB';
+                return res.status(500).json({
+                    error: error.message
+                });
+            }
+            return res.status(400).json({
+                error: error.message
+            });
+        }
     }
 
     public async create(req: Request, res: Response): Promise<Response> {
@@ -27,29 +39,50 @@ class TicketsController {
 
             return res.status(201).json({ message: 'ticket created', query });
         } catch (error) {
-            return res.status(200).json({ message: error.message });
+            if (error.code == 'ECONNREFUSED') {
+                error.message = 'Error connecting to DB';
+                return res.status(500).json({
+                    error: error.message
+                });
+            }
+            return res.status(400).json({
+                error: error.message
+            });
         }
     }
 
     public async getTicket(req: Request, res: Response): Promise<Response> {
         const { id } = req.params;
 
-        let ticket;
-        if (res.locals.decodedToken.isAdmin == false) {
-            ticket = await TicketsRepository.getOneTicketUser(
-                Number(id),
-                Number(res.locals.decodedToken.user_id)
-            );
-        } else {
-            ticket = await TicketsRepository.getOneTicket(Number(id));
-        }
+        try {
+            let ticket;
+            if (res.locals.decodedToken.isAdmin == false) {
+                ticket = await TicketsRepository.getOneTicketUser(
+                    Number(id),
+                    Number(res.locals.decodedToken.user_id)
+                );
+            } else {
+                ticket = await TicketsRepository.getOneTicket(Number(id));
+            }
 
-        if (!ticket) {
-            return res.status(404).json({
-                message: 'Ticket not found!'
+            if (!ticket) {
+                return res.status(404).json({
+                    message: 'Ticket not found!'
+                });
+            }
+            return res.status(200).json(ticket);
+        } catch (error) {
+            if (error.code == 'ECONNREFUSED') {
+                error.message = 'Error connecting to DB';
+                return res.status(500).json({
+                    error: error.message
+                });
+            }
+            return res.status(400).json({
+                error: error.message
             });
+            // return res.status(400).json(err);
         }
-        return res.status(200).json(ticket);
     }
 
     public async updateTicket(req: Request, res: Response): Promise<Response> {
@@ -71,64 +104,85 @@ class TicketsController {
                 message: 'Ticket not updated!'
             });
         } catch (error) {
-            res.json({ message: error });
+            if (error.code == 'ECONNREFUSED') {
+                error.message = 'Error connecting to DB';
+                return res.status(500).json({
+                    error: error.message
+                });
+            }
+            return res.status(400).json({
+                error: error.message
+            });
+            // res.json({ message: error });
         }
 
-        return res.json();
+        // return res.json();
     }
 
     public async removeTicket(req: Request, res: Response): Promise<Response> {
         const { id } = req.params;
         const { userId } = res.locals.decodedToken;
-        const query = await TicketsRepository.delete(
-            Number(id),
-            Number(userId)
-        );
 
-        if (!query) {
-            return res.status(404).json({
-                message: 'Ticket you want to remove does not exist!'
-            });
+        if (res.locals.decodedToken.isAdmin == true) {
+            try {
+                const query = await TicketsRepository.delete(
+                    Number(id),
+                    Number(userId)
+                );
+
+                if (!query) {
+                    return res.status(404).json({
+                        message: 'Ticket you want to remove does not exist!'
+                    });
+                }
+                return res
+                    .status(200)
+                    .json({ message: [`Ticket ${Number(id)} deleted`] });
+            } catch (error) {
+                if (error.code == 'ECONNREFUSED') {
+                    error.message = 'Error connecting to DB';
+                    return res.status(500).json({
+                        error: error.message
+                    });
+                }
+                return res.status(400).json({
+                    error: error.message
+                });
+            }
         }
-
-        return res
-            .status(200)
-            .json({ message: [`Ticket ${Number(id)} deleted`] });
+        return res.status(204).json();
     }
 
     public async createComment(req: Request, res: Response): Promise<Response> {
         const { content, id_ticket } = req.body;
         const { user_id } = res.locals.decodedToken;
-
+        // console.log('here');
         try {
             const commentId = await TicketsRepository.comment(
                 content,
                 user_id,
                 id_ticket
             );
-
-            //
-            // if([commentId]) {
-            //     const { subject, content } = req.body;
-            //     const { user_id } = res.locals.decodedToken;
-            //     const { id } = req.params
-
-            //     const ticketId = await TicketsRepository.update(subject, content, Number(id), user_id);
-
-            //     return res.status(200).json({
-            //         message: 'Ticket last_update_date and user was filled'
-            //     });
-            // }
-            //
-
-            return res
-                .status(200)
-                .json({ message: [`Comment with ID ${commentId} created.`] });
-        } catch (err) {
-            return res.status(404).json({
-                message: 'Ticket you want to comment does not exist!'
+            if (commentId) {
+                await TicketsRepository.update({ status: 'Open' }, id_ticket);
+                return res.status(200).json({
+                    message: [`Comment with ID ${commentId} created.`]
+                });
+            }
+        } catch (error) {
+            if (error.code == 'ECONNREFUSED') {
+                error.message = 'Error connecting to DB';
+                return res.status(500).json({
+                    error: error.message
+                });
+            }
+            return res.status(400).json({
+                error: error.message
             });
         }
+        return res.status(404).json({
+            message: 'Ticket you want to comment does not exist!'
+        });
     }
 
     public async closeTicket(req: Request, res: Response): Promise<Response> {
@@ -148,25 +202,22 @@ class TicketsController {
                     message: [`Ticket ${Number(req.params.id)} closed`]
                 });
             }
-            return res.status(200).json({
-                message: 'Ticket not closed!'
-            });
         } catch (error) {
-            res.json({ message: error });
+            if (error.code == 'ECONNREFUSED') {
+                error.message = 'Error connecting to DB';
+                return res.status(500).json({
+                    error: error.message
+                });
+            }
+            return res.status(400).json({
+                error: error.message
+            });
         }
 
-        return res.json();
+        return res.status(200).json({
+            message: 'Ticket not closed!'
+        });
     }
-    //     const ticketId = await TicketsRepository.markAsClosed(status, Number(id), Number(userId));
-
-    //         if (!ticketId) {
-    //             return res.status(404).json({
-    //                 message: 'Ticket you want to close does not exist!'
-    //             });
-    //         }
-
-    //     return res.status(200).json({ message: [`You closed ticket ${Number(id)}.`]});
-    // }
 }
 
 export default new TicketsController();

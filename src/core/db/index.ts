@@ -26,6 +26,7 @@ const queryBuilder = knex({
             return useDefaultTypeCasting();
         }
     }
+    // debug: true
 });
 
 // Model.knex(queryBuilder);

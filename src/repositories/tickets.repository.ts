@@ -87,8 +87,8 @@ export default class TicketsRepository {
         ticket: Ticket,
         ticketId: number
     ): Promise<Number> {
-        console.log(ticketId);
-        console.log(ticket);
+        // console.log(ticketId);
+        // console.log(ticket);
         return Tickets.query()
             .findById(ticketId)
             .patch(ticket);
@@ -111,7 +111,6 @@ export default class TicketsRepository {
         userId: number,
         ticketId: number
     ): Promise<Comments> {
-        this.update({ status: 'Open' }, ticketId);
         return Comments.query().insert({
             idUser: userId,
             idTicket: ticketId,

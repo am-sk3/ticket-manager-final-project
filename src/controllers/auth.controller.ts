@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import AuthRepository from '../repositories/auth.repository';
+
 class AuthController {
     public static async login(req: Request, res: Response): Promise<Response> {
         try {
@@ -12,9 +13,16 @@ class AuthController {
             const token = await AuthRepository.attemptLogin(email, password);
 
             return res.json({ token });
-        } catch (err) {
+        } catch (error) {
+            // console.log(err);
+            if (error.code == 'ECONNREFUSED') {
+                error.message = 'Error connecting to DB';
+                return res.status(500).json({
+                    error: error.message
+                });
+            }
             return res.status(401).json({
-                message: err.message
+                error: error.message
             });
         }
     }
@@ -25,8 +33,6 @@ class AuthController {
     ): Promise<Response> {
         try {
             const { email, name, password } = req.body;
-
-            // Validacao de campos
 
             const userId = await AuthRepository.register(name, email, password);
 
@@ -39,28 +45,18 @@ class AuthController {
             }
 
             return res.status(400).json();
-        } catch (err) {
-            return res.status(400).json({
-                message: err.message
+        } catch (error) {
+            if (error.code == 'ECONNREFUSED') {
+                error.message = 'Error connecting to DB';
+                return res.status(500).json({
+                    error: error.message
+                });
+            }
+            return res.status(401).json({
+                error: error.message
             });
         }
     }
-
-    // public static async profile(req: Request, res: Response): Promise<Response> {
-    //     const decodedToken = res.locals.decodedToken;
-    //     const userId = decodedToken.user_id;
-
-    //     const user = await UsersRepository.byId(userId);
-    //     const info = await AuthRepository.getUserInfo(userId);
-
-    //     delete user.password;
-
-    //     return res.json({ user, info: info[0][0] });
-    // }
-
-    // public static async logout(req: Request, res: Response): Promise<Response> {
-    //     return res.json();
-    // }
 }
 
 export default AuthController;
