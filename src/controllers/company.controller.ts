@@ -128,7 +128,9 @@ class CompanyController {
                 Number(userId)
             );
 
-            return res.json({ message: 'user was added to the company' });
+            return res
+                .status(201)
+                .json({ message: 'user was added to the company' });
         } catch (error) {
             if (error.code == 'ECONNREFUSED') {
                 error.message = 'Error connecting to DB';

@@ -1,17 +1,8 @@
-// import { Model } from 'objection';
-// import queryBuilder from '../core/db/index';
 import User from '../models/User';
 import Users from '../schemas/users.schema';
 
-// Model.knex(queryBuilder);
-
 export default class UsersRepository {
     public static async byId(userId: number): Promise<Users> {
-        // return queryBuilder
-        //     .select()
-        //     .from('users')
-        //     .where('id', '=', userId)
-        //     .first();
         return Users.query()
             .select(
                 'id',
@@ -26,7 +17,6 @@ export default class UsersRepository {
     }
 
     public static async getAll(): Promise<Users[]> {
-        // const query = queryBuilder<User>('users');
         const query = Users.query().select(
             'id',
             'name',
@@ -35,21 +25,14 @@ export default class UsersRepository {
             'is_admin',
             'is_enabled'
         );
-        // console.log(query);
         return query;
     }
 
     public static async create(user: User): Promise<Users> {
-        // const { name, email, password, id_company, is_admin } = req.
-        // const values = JSON.stringify(user)
         return Users.query().insert(user);
-        // return queryBuilder.insert(user).into('users');
     }
 
     public static async update(user: User, userId: number): Promise<Number> {
-        // return queryBuilder('users').update();
-
-        // console.log(user);
         return Users.query()
             .findById(userId)
             .patch(user);
