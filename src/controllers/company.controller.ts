@@ -32,8 +32,25 @@ class CompanyController {
 
     public async getById(req: Request, res: Response): Promise<Response> {
         const { id } = req.params;
+        const { user_id, isAdmin } = res.locals.decodedToken;
         try {
-            const company = await CompanyRepository.byId(Number(id));
+            if (isAdmin == false) {
+                const isCompanyUser = await CompanyRepository.searchByUser(
+                    Number(id),
+                    Number(user_id)
+                );
+                if (isCompanyUser) {
+                    const query = await CompanyRepository.byId(Number(id));
+
+                    if (query) {
+                        return res.status(200).json({ message: query });
+                    }
+                    return res.status(201).json({ error: 'Unknown company' });
+                }
+                return res.status(401).json({ error: 'Forbidden' });
+            }
+            const company = await CompanyRepository.byId(Number(id), true);
+
             return res.status(200).json({ message: company });
         } catch (error) {
             if (error.code == 'ECONNREFUSED') {

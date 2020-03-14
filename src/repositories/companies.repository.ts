@@ -2,30 +2,51 @@ import Users from '../schemas/users.schema';
 import Companies from '../schemas/companies.schema';
 
 export default class CompaniesRepository {
-    public static async byId(companyId: number): Promise<Companies[]> {
-        const query = Companies.query()
-            .where({ id: companyId })
-            .withGraphFetched('users(selectInfo)')
-            .modifiers({
-                selectInfo(builder) {
-                    builder.select(
-                        'id',
-                        'name',
-                        'email',
-                        'created_at',
-                        'is_enabled'
-                    );
-                }
-            })
-            .withGraphFetched('tickets(showOpen)')
-            .modifiers({
-                showOpen(builder) {
-                    builder.select('id', 'subject', 'content').where({
-                        id_company: companyId,
-                        status: 'Open'
-                    });
-                }
-            });
+    public static async byId(
+        companyId: number,
+        isAdmin: boolean = false
+    ): Promise<Companies[]> {
+        let query;
+        if (isAdmin === false) {
+            query = Companies.query()
+                .select('id', 'name')
+                .where({ id: companyId })
+                .withGraphFetched('users(selectInfo)')
+                .modifiers({
+                    selectInfo(builder) {
+                        builder.select('id', 'name', 'email', 'created_at');
+                    }
+                })
+                .withGraphFetched('tickets(showOpen)')
+                .modifiers({
+                    showOpen(builder) {
+                        builder.select('id', 'subject', 'content').where({
+                            id_company: companyId,
+                            status: 'Open'
+                        });
+                    }
+                });
+        } else {
+            query = Companies.query()
+                .where({ id: companyId })
+                .withGraphFetched('users(selectInfo)')
+                .modifiers({
+                    selectInfo(builder) {
+                        builder
+                            .select('id', 'name', 'email', 'created_at')
+                            .where({ is_enabled: false });
+                    }
+                })
+                .withGraphFetched('tickets(showOpen)')
+                .modifiers({
+                    showOpen(builder) {
+                        builder.select('id', 'subject', 'content').where({
+                            id_company: companyId,
+                            status: 'Open'
+                        });
+                    }
+                });
+        }
         return query;
     }
 
@@ -79,14 +100,15 @@ export default class CompaniesRepository {
         userId: number
     ): Promise<Boolean> {
         const company = await Companies.query().findById(companyId);
+        if (company) {
+            const user = await company
+                .$relatedQuery('users')
+                .where({ id_user: userId })
+                .first();
 
-        const user = await company
-            .$relatedQuery('users')
-            .where({ id_user: userId })
-            .first();
-
-        if (user) {
-            return true;
+            if (user) {
+                return true;
+            }
         }
         return false;
     }
@@ -106,7 +128,10 @@ export default class CompaniesRepository {
         const user = await Users.query()
             .select('id')
             .findById(userId);
-        return user.$relatedQuery('companies');
+        return user
+            .$relatedQuery('companies')
+            .select('id', 'name')
+            .where({ is_deleted: false });
     }
 
     public static async byUserIdFirst(userId: number): Promise<Companies> {
