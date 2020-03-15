@@ -15,11 +15,8 @@ export default class AuthRepository {
                 password,
                 is_enabled: true
             })
-            // 'email', '=', email)
-            // .andWhere('password', '=', createHash('sha256').update(password).digest('hex'))
-            // .andWhere('password', '=', password)
+
             .first();
-        // console.log(user);
         return new Promise((resolve, reject) => {
             if (user) {
                 const token = sign(
@@ -31,7 +28,6 @@ export default class AuthRepository {
                     },
                     secret
                 );
-                // console.log(Math.floor(Date.now() / 1000) + (60 * 60));
                 resolve(token);
             }
 
@@ -44,8 +40,6 @@ export default class AuthRepository {
         email: string,
         password: string
     ): Promise<Users> {
-        // password = createHash('sha256')            .update(password)            .digest('hex');
-
         return Users.query().insert({
             email,
             password,
