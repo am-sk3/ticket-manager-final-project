@@ -43,7 +43,7 @@ export default class TokenMiddleware {
                 {
                     exp: Math.floor(Date.now() / 1000) + 60 * 10,
                     username: res.locals.decodedToken.email,
-                    user_id: res.locals.decodedToken.id,
+                    user_id: res.locals.decodedToken.user_id,
                     isAdmin: res.locals.decodedToken.isAdmin
                 },
                 secret
