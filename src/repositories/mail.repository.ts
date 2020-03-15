@@ -24,6 +24,50 @@ const testAccount = {
 };
 
 export default class MailRepository {
+    public static async sendMailRegister(mailTo: string): Promise<any> {
+        const transporter = nodemailer.createTransport({
+            host: 'smtp.ethereal.email',
+            port: 587,
+            secure: false, // true for 465, false for other ports
+            auth: {
+                user: testAccount.user, // generated ethereal user
+                pass: testAccount.pass // generated ethereal password
+            }
+        });
+
+        await transporter.sendMail({
+            from: `"Ticket Manager" <${testAccount.email}`, // sender address
+            to: mailTo, // list of receivers
+            subject: `"Welcome to Ticket-Manager"`, // Subject line
+            text: `Your account has been created, and is now waiting for validation from a technician. Please wait for confirmation.`, // plain text body
+            html: `<p>Your account has been created, and is now waiting for validation from a technician.</p>Please wait for confirmation.` // html body
+        });
+    }
+
+    // public static async sendMailTicketUpdate(
+    //     mailTo: string,
+    //     ticketId: number,
+    //     replyText: string
+    // ): Promise<any> {
+    //     const transporter = nodemailer.createTransport({
+    //         host: 'smtp.ethereal.email',
+    //         port: 587,
+    //         secure: false, // true for 465, false for other ports
+    //         auth: {
+    //             user: testAccount.user, // generated ethereal user
+    //             pass: testAccount.pass // generated ethereal password
+    //         }
+    //     });
+
+    //     await transporter.sendMail({
+    //         from: `"Ticket Manager" <${testAccount.email}`, // sender address
+    //         to: mailTo, // list of receivers
+    //         subject: `"New Reply on Ticket #${ticketId}"`, // Subject line
+    //         text: `There's a new reply on your ticket. Please verify the reply.\n Reply: ${replyText} `, // plain text body
+    //         html: `<p>There's a new reply on your ticket. Please verify the reply.</p> <p>Reply: ${replyText}</p>` // html body
+    //     });
+    // }
+
     public static async replyMail(
         ticketNumber: any,
         mailTo: EmailAddress,

@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import AuthRepository from '../repositories/auth.repository';
 import { createHash } from 'crypto';
 import Users from '../schemas/users.schema';
+import MailRepository from '../repositories/mail.repository';
 
 class AuthController {
     public static async login(req: Request, res: Response): Promise<Response> {
@@ -55,6 +56,7 @@ class AuthController {
                 );
 
                 if (userId) {
+                    MailRepository.sendMailRegister(email);
                     return res.json({
                         message:
                             'registration sucessful. Please wait for your account activation.'
