@@ -91,7 +91,7 @@ class TicketsController {
                     .status(404)
                     .json({ tokenRefresh, message: 'Ticket not found!' });
             }
-            return res.status(200).json(ticket);
+            return res.status(200).json({ tokenRefresh, ticket });
         } catch (error) {
             if (error.code == 'ECONNREFUSED') {
                 error.message = 'Error connecting to DB';
@@ -211,11 +211,6 @@ class TicketsController {
                             message: 'Invalid Company ID!'
                         });
                     }
-
-                    // console.log(ticket);
-                    // if (ticketVerification) {
-
-                    // }
                 }
             }
             return res
@@ -276,7 +271,6 @@ class TicketsController {
         const { content } = req.body;
         const { user_id, isAdmin } = res.locals.decodedToken;
         try {
-            // console.log('here');
             if (isAdmin == false) {
                 const ticketVerification = await TicketsRepository.getOneTicketUser(
                     idTicket,
@@ -294,7 +288,6 @@ class TicketsController {
                 user_id,
                 idTicket
             );
-            // console.log(commentId);
             if (commentId) {
                 await TicketsRepository.update({ status: 'Open' }, idTicket);
                 return res.status(200).json({

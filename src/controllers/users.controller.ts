@@ -13,13 +13,11 @@ class UsersController {
         } catch (error) {
             if (error.code == 'ECONNREFUSED') {
                 error.message = 'Error connecting to DB';
-                return res.status(500).json({tokenRefresh,
-                    error: error.message
-                });
+                return res
+                    .status(500)
+                    .json({ tokenRefresh, error: error.message });
             }
-            return res.status(400).json({tokenRefresh,
-                error: error.message
-            });
+            return res.status(400).json({ tokenRefresh, error: error.message });
         }
     }
 
@@ -27,11 +25,11 @@ class UsersController {
         const { tokenRefresh } = res.locals;
         const { id } = req.params;
 
-        if (res.locals.decodedToken.isAdmin == false) {
-            if (id != res.locals.decodedToken.user_id) {
-                return res.status(403).json({ message: 'Forbidden' });
-            }
-        }
+        // if (res.locals.decodedToken.isAdmin == false) {
+        //     if (id != res.locals.decodedToken.user_id) {
+        //         return res.status(403).json({ message: 'Forbidden' });
+        //     }
+        // }
 
         try {
             const query = await UsersRepository.byId(Number(id));
@@ -44,13 +42,11 @@ class UsersController {
         } catch (error) {
             if (error.code == 'ECONNREFUSED') {
                 error.message = 'Error connecting to DB';
-                return res.status(500).json({tokenRefresh,
-                    error: error.message
-                });
+                return res
+                    .status(500)
+                    .json({ tokenRefresh, error: error.message });
             }
-            return res.status(400).json({tokenRefresh,
-                error: error.message
-            });
+            return res.status(400).json({ tokenRefresh, error: error.message });
         }
     }
 
@@ -66,13 +62,11 @@ class UsersController {
         } catch (error) {
             if (error.code == 'ECONNREFUSED') {
                 error.message = 'Error connecting to DB';
-                return res.status(500).json({tokenRefresh,
-                    error: error.message
-                });
+                return res
+                    .status(500)
+                    .json({ tokenRefresh, error: error.message });
             }
-            return res.status(400).json({tokenRefresh,
-                error: error.message
-            });
+            return res.status(400).json({ tokenRefresh, error: error.message });
         }
     }
 
@@ -104,15 +98,12 @@ class UsersController {
         } catch (error) {
             if (error.code == 'ECONNREFUSED') {
                 error.message = 'Error connecting to DB';
-                return res.status(500).json({tokenRefresh,
-                    error: error.message
-                });
+                return res
+                    .status(500)
+                    .json({ tokenRefresh, error: error.message });
             }
-            return res.status(400).json({tokenRefresh,
-                error: error.message
-            });
+            return res.status(400).json({ tokenRefresh, error: error.message });
         }
-        return res.json();
     }
 
     public async removeUser(req: Request, res: Response): Promise<Response> {
@@ -126,13 +117,11 @@ class UsersController {
         } catch (error) {
             if (error.code == 'ECONNREFUSED') {
                 error.message = 'Error connecting to DB';
-                return res.status(500).json({tokenRefresh,
-                    error: error.message
-                });
+                return res
+                    .status(500)
+                    .json({ tokenRefresh, error: error.message });
             }
-            return res.status(400).json({tokenRefresh,
-                error: error.message
-            });
+            return res.status(400).json({ tokenRefresh, error: error.message });
         }
     }
 
@@ -154,13 +143,11 @@ class UsersController {
         } catch (error) {
             if (error.code == 'ECONNREFUSED') {
                 error.message = 'Error connecting to DB';
-                return res.status(500).json({tokenRefresh,
-                    error: error.message
-                });
+                return res
+                    .status(500)
+                    .json({ tokenRefresh, error: error.message });
             }
-            return res.status(400).json({tokenRefresh,
-                error: error.message
-            });
+            return res.status(400).json({ tokenRefresh, error: error.message });
         }
     }
 }

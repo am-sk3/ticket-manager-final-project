@@ -1,16 +1,20 @@
 import { Request, Response } from 'express';
 import AuthRepository from '../repositories/auth.repository';
+import { createHash } from 'crypto';
 
 class AuthController {
     public static async login(req: Request, res: Response): Promise<Response> {
         try {
             const { email, password } = req.body;
+            const encPassword = createHash('sha256')
+                .update(password)
+                .digest('hex');
             if (!email || !password) {
                 return res.status(402).json({
                     message: 'email and password are required for login'
                 });
             }
-            const token = await AuthRepository.attemptLogin(email, password);
+            const token = await AuthRepository.attemptLogin(email, encPassword);
 
             return res.json({ token });
         } catch (error) {
@@ -33,12 +37,20 @@ class AuthController {
         try {
             const { email, name, password } = req.body;
 
-            const userId = await AuthRepository.register(name, email, password);
+            const encPassword = createHash('sha256')
+                .update(password)
+                .digest('hex');
+
+            const userId = await AuthRepository.register(
+                name,
+                email,
+                encPassword
+            );
 
             if (userId) {
                 const token = await AuthRepository.attemptLogin(
                     email,
-                    password
+                    encPassword
                 );
                 return res.json({ token });
             }
