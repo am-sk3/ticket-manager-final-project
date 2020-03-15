@@ -54,6 +54,11 @@ class UsersController {
         const { tokenRefresh } = res.locals;
         const user = new User(req.body);
 
+        if (user.password !== undefined) {
+            user.password = createHash('sha256')
+                .update(user.password)
+                .digest('hex');
+        }
         try {
             const query = await UsersRepository.create(user);
             return res
