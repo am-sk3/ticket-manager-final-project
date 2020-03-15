@@ -311,7 +311,7 @@ class TicketsController {
     }
 
     public async closeTicket(req: Request, res: Response): Promise<Response> {
-        const ticket = new Ticket(req.body);
+        const ticket = req.body;
         const { status } = req.body;
         ticket.lastUpdateUser = res.locals.decodedToken.user_id;
 
@@ -340,7 +340,7 @@ class TicketsController {
         }
 
         return res.status(200).json({
-            message: 'Ticket not closed!'
+            message: 'Ticket does not exist!'
         });
     }
 }
