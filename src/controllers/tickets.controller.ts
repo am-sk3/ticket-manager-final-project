@@ -3,7 +3,6 @@ import TicketsRepository from '../repositories/tickets.repository';
 import Ticket from '../models/Ticket';
 import { now } from 'moment';
 import CompaniesRepository from '../repositories/companies.repository';
-import { isUndefined } from 'util';
 
 class TicketsController {
     public async getAll(req: Request, res: Response): Promise<Response> {
