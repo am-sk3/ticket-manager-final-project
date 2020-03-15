@@ -38,17 +38,23 @@ class TicketsController {
             const ticket = new Ticket(req.body);
             ticket.idUser = res.locals.decodedToken.user_id;
             ticket.lastUpdateUser = res.locals.decodedToken.user_id;
+            const { isAdmin } = res.locals.decodedToken;
 
-            if (ticket.idCompany !== undefined && ticket.idUser !== undefined) {
-                const companyValidation = await CompaniesRepository.searchByUser(
-                    ticket.idCompany,
-                    ticket.idUser
-                );
+            if (isAdmin == false) {
+                if (
+                    ticket.idCompany !== undefined &&
+                    ticket.idUser !== undefined
+                ) {
+                    const companyValidation = await CompaniesRepository.searchByUser(
+                        ticket.idCompany,
+                        ticket.idUser
+                    );
 
-                if (!companyValidation) {
-                    return res
-                        .status(401)
-                        .json({ tokenRefresh, error: 'Invalid company' });
+                    if (!companyValidation) {
+                        return res
+                            .status(401)
+                            .json({ tokenRefresh, error: 'Invalid company' });
+                    }
                 }
             }
             const query = await TicketsRepository.createTicket(ticket);
