@@ -94,6 +94,7 @@ export default class TicketsRepository {
         ticket: Ticket,
         ticketId: number
     ): Promise<Number> {
+        ticket.lastUpdate = moment().toDate();
         return Tickets.query()
             .findById(ticketId)
             .patch(ticket);
