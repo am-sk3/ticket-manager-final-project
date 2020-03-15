@@ -6,6 +6,7 @@ import CompaniesRepository from '../repositories/companies.repository';
 
 class TicketsController {
     public async getAll(req: Request, res: Response): Promise<Response> {
+        const { tokenRefresh } = res.locals;
         try {
             let tickets;
             if (res.locals.decodedToken.isAdmin === false) {
@@ -17,23 +18,22 @@ class TicketsController {
             }
 
             if (tickets && Object.keys(tickets).length > 0) {
-                return res.status(200).json(tickets);
+                return res.status(200).json({ tokenRefresh, tickets });
             }
             return res.status(201).json({ error: 'No tickets found' });
         } catch (error) {
             if (error.code == 'ECONNREFUSED') {
                 error.message = 'Error connecting to DB';
-                return res.status(500).json({
-                    error: error.message
-                });
+                return res
+                    .status(500)
+                    .json({ tokenRefresh, error: error.message });
             }
-            return res.status(400).json({
-                error: error.message
-            });
+            return res.status(400).json({ tokenRefresh, error: error.message });
         }
     }
 
     public async create(req: Request, res: Response): Promise<Response> {
+        const { tokenRefresh } = res.locals;
         try {
             const ticket = new Ticket(req.body);
             ticket.idUser = res.locals.decodedToken.user_id;
@@ -46,31 +46,33 @@ class TicketsController {
                 );
 
                 if (!companyValidation) {
-                    return res.status(401).json({ error: 'Invalid company' });
+                    return res
+                        .status(401)
+                        .json({ tokenRefresh, error: 'Invalid company' });
                 }
             }
             const query = await TicketsRepository.createTicket(ticket);
 
             return res.status(201).json({
+                tokenRefresh,
                 message: `ticket created with id ${query.id}`
             });
         } catch (error) {
             if (error.code == 'ECONNREFUSED') {
                 error.message = 'Error connecting to DB';
-                return res.status(500).json({
-                    error: error.message
-                });
+                return res
+                    .status(500)
+                    .json({ tokenRefresh, error: error.message });
             }
             if (error.code == 'ER_BAD_FIELD_ERROR') {
                 error.message = 'Validation error. Unknown parameter';
             }
-            return res.status(400).json({
-                error: error.message
-            });
+            return res.status(400).json({ tokenRefresh, error: error.message });
         }
     }
 
     public async getTicket(req: Request, res: Response): Promise<Response> {
+        const { tokenRefresh } = res.locals;
         const { id } = req.params;
 
         try {
@@ -85,25 +87,24 @@ class TicketsController {
             }
 
             if (!ticket) {
-                return res.status(404).json({
-                    message: 'Ticket not found!'
-                });
+                return res
+                    .status(404)
+                    .json({ tokenRefresh, message: 'Ticket not found!' });
             }
             return res.status(200).json(ticket);
         } catch (error) {
             if (error.code == 'ECONNREFUSED') {
                 error.message = 'Error connecting to DB';
-                return res.status(500).json({
-                    error: error.message
-                });
+                return res
+                    .status(500)
+                    .json({ tokenRefresh, error: error.message });
             }
-            return res.status(400).json({
-                error: error.message
-            });
+            return res.status(400).json({ tokenRefresh, error: error.message });
         }
     }
 
     public async updateTicket(req: Request, res: Response): Promise<Response> {
+        const { tokenRefresh } = res.locals;
         try {
             const { id } = req.params;
 
@@ -154,6 +155,7 @@ class TicketsController {
 
                             if (query === 1) {
                                 return res.status(200).json({
+                                    tokenRefresh,
                                     message: `Ticket ${Number(
                                         req.params.id
                                     )} updated`
@@ -205,6 +207,7 @@ class TicketsController {
                             }
                         }
                         return res.status(400).json({
+                            tokenRefresh,
                             message: 'Invalid Company ID!'
                         });
                     }
@@ -215,23 +218,22 @@ class TicketsController {
                     // }
                 }
             }
-            return res.status(400).json({
-                message: 'Invalid Ticket!'
-            });
+            return res
+                .status(400)
+                .json({ tokenRefresh, message: 'Invalid Ticket!' });
         } catch (error) {
             if (error.code == 'ECONNREFUSED') {
                 error.message = 'Error connecting to DB';
-                return res.status(500).json({
-                    error: error.message
-                });
+                return res
+                    .status(500)
+                    .json({ tokenRefresh, error: error.message });
             }
-            return res.status(400).json({
-                error: error.message
-            });
+            return res.status(400).json({ tokenRefresh, error: error.message });
         }
     }
 
     public async removeTicket(req: Request, res: Response): Promise<Response> {
+        const { tokenRefresh } = res.locals;
         const { id } = req.params;
         const { userId } = res.locals.decodedToken;
 
@@ -244,28 +246,31 @@ class TicketsController {
 
                 if (!query) {
                     return res.status(404).json({
+                        tokenRefresh,
                         message: 'Ticket you want to remove does not exist!'
                     });
                 }
-                return res
-                    .status(200)
-                    .json({ message: [`Ticket ${Number(id)} deleted`] });
+                return res.status(200).json({
+                    tokenRefresh,
+                    message: [`Ticket ${Number(id)} deleted`]
+                });
             } catch (error) {
                 if (error.code == 'ECONNREFUSED') {
                     error.message = 'Error connecting to DB';
-                    return res.status(500).json({
-                        error: error.message
-                    });
+                    return res
+                        .status(500)
+                        .json({ tokenRefresh, error: error.message });
                 }
-                return res.status(400).json({
-                    error: error.message
-                });
+                return res
+                    .status(400)
+                    .json({ tokenRefresh, error: error.message });
             }
         }
         return res.status(204).json();
     }
 
     public async createComment(req: Request, res: Response): Promise<Response> {
+        const { tokenRefresh } = res.locals;
         const { id } = req.params;
         const idTicket = Number(id);
         const { content } = req.body;
@@ -279,7 +284,9 @@ class TicketsController {
                 );
 
                 if (!ticketVerification) {
-                    return res.status(400).json({ error: 'Invalid ticket' });
+                    return res
+                        .status(400)
+                        .json({ tokenRefresh, error: 'Invalid ticket' });
                 }
             }
             const commentId = await TicketsRepository.comment(
@@ -291,19 +298,18 @@ class TicketsController {
             if (commentId) {
                 await TicketsRepository.update({ status: 'Open' }, idTicket);
                 return res.status(200).json({
+                    tokenRefresh,
                     message: `Comment with ID ${commentId.id} created.`
                 });
             }
         } catch (error) {
             if (error.code == 'ECONNREFUSED') {
                 error.message = 'Error connecting to DB';
-                return res.status(500).json({
-                    error: error.message
-                });
+                return res
+                    .status(500)
+                    .json({ tokenRefresh, error: error.message });
             }
-            return res.status(400).json({
-                error: error.message
-            });
+            return res.status(400).json({ tokenRefresh, error: error.message });
         }
         return res.status(404).json({
             message: 'Ticket you want to comment does not exist!'
@@ -311,6 +317,7 @@ class TicketsController {
     }
 
     public async closeTicket(req: Request, res: Response): Promise<Response> {
+        const { tokenRefresh } = res.locals;
         const ticket = req.body;
         const { status } = req.body;
         ticket.lastUpdateUser = res.locals.decodedToken.user_id;
@@ -324,24 +331,23 @@ class TicketsController {
 
             if (query === 1) {
                 return res.status(200).json({
-                    message: [`Ticket ${Number(req.params.id)} closed`]
+                    tokenRefresh,
+                    message: `Ticket ${Number(req.params.id)} closed`
                 });
             }
         } catch (error) {
             if (error.code == 'ECONNREFUSED') {
                 error.message = 'Error connecting to DB';
-                return res.status(500).json({
-                    error: error.message
-                });
+                return res
+                    .status(500)
+                    .json({ tokenRefresh, error: error.message });
             }
-            return res.status(400).json({
-                error: error.message
-            });
+            return res.status(400).json({ tokenRefresh, error: error.message });
         }
 
-        return res.status(200).json({
-            message: 'Ticket does not exist!'
-        });
+        return res
+            .status(200)
+            .json({ tokenRefresh, message: 'Ticket does not exist!' });
     }
 }
 

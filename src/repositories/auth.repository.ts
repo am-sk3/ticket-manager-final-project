@@ -24,14 +24,14 @@ export default class AuthRepository {
             if (user) {
                 const token = sign(
                     {
-                        exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 31,
+                        exp: Math.floor(Date.now() / 1000) + 60 * 10,
                         username: user.email,
                         user_id: user.id,
                         isAdmin: user.isAdmin
                     },
                     secret
                 );
-
+                // console.log(Math.floor(Date.now() / 1000) + (60 * 60));
                 resolve(token);
             }
 

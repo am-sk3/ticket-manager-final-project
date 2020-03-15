@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
-import { verify } from 'jsonwebtoken';
+import { verify, sign } from 'jsonwebtoken';
 import dotenv from 'dotenv';
+import UsersRepository from '../../repositories/users.repository';
 
 dotenv.config();
 
@@ -27,7 +28,27 @@ export default class TokenMiddleware {
 
         try {
             const token = req.headers.authorization.split('Bearer ')[1];
+
             res.locals.decodedToken = verify(token, secret);
+
+            if (res.locals.decodedToken.user_id !== undefined) {
+                const userEnabled = await UsersRepository.isEnabled(
+                    Number(res.locals.decodedToken.user_id)
+                );
+                if (!userEnabled) {
+                    throw new Error('invalid user');
+                }
+            }
+            res.locals.tokenRefresh = sign(
+                {
+                    exp: Math.floor(Date.now() / 1000) + 60 * 10,
+                    username: res.locals.decodedToken.email,
+                    user_id: res.locals.decodedToken.id,
+                    isAdmin: res.locals.decodedToken.isAdmin
+                },
+                secret
+            );
+            // console.log(res.locals.tokenRefresh);
             return next();
         } catch (err) {
             return res.status(403).json({

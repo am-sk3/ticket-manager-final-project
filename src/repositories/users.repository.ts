@@ -77,4 +77,15 @@ export default class UsersRepository {
                 .first()
         );
     }
+
+    public static async isEnabled(userId: number): Promise<Boolean> {
+        const user = await Users.query()
+            .select('id')
+            .where('is_enabled', true)
+            .andWhere('id', userId);
+        if (Object.keys(user).length > 0) {
+            return true;
+        }
+        return false;
+    }
 }
