@@ -1,8 +1,8 @@
 /* eslint-disable no-unused-vars */
 import { Request, Response } from 'express';
+import { createHash } from 'crypto';
 import UsersRepository from '../repositories/users.repository';
 import User from '../models/User';
-import { createHash } from 'crypto';
 
 class UsersController {
     public async getAll(req: Request, res: Response): Promise<Response> {
@@ -31,7 +31,6 @@ class UsersController {
         //         return res.status(403).json({ message: 'Forbidden' });
         //     }
         // }
-
         try {
             const query = await UsersRepository.byId(Number(id));
             if (res.locals.decodedToken.isAdmin === false) {
@@ -149,6 +148,31 @@ class UsersController {
             );
 
             return res.json({ tokenRefresh, message: 'Password changed!' });
+        } catch (error) {
+            if (error.code == 'ECONNREFUSED') {
+                error.message = 'Error connecting to DB';
+                return res
+                    .status(500)
+                    .json({ tokenRefresh, error: error.message });
+            }
+            return res.status(400).json({ tokenRefresh, error: error.message });
+        }
+    }
+
+    public async getProfile(req: Request, res: Response): Promise<Response> {
+        const { tokenRefresh } = res.locals;
+        const { user_id } = res.locals.decodedToken;
+
+        try {
+            const query = await UsersRepository.byId(Number(user_id));
+
+            if (res.locals.decodedToken.isAdmin === false) {
+                query.isEnabled = undefined;
+                query.isAdmin = undefined;
+                query.password = undefined;
+            }
+
+            return res.status(200).json({ tokenRefresh, message: query });
         } catch (error) {
             if (error.code == 'ECONNREFUSED') {
                 error.message = 'Error connecting to DB';

@@ -20,14 +20,9 @@ if (process.env.MAILENABLED === 'true') {
 // ! AUTH
 router.post('/api/auth/login', AuthController.login);
 router.post('/api/auth/register', AuthController.register);
-// router.delete('/api/auth/logout', AuthController.logout);
 
 //!  TICKETS
-router.get(
-    '/api/tickets',
-    // PermissionsController.verifyAdminUsers,
-    TicketsController.getAll
-);
+router.get('/api/tickets', TicketsController.getAll);
 router.get('/api/tickets/:id', TicketsController.getTicket);
 router.put('/api/tickets/:id/update', TicketsController.updateTicket);
 router.post('/api/tickets/create', TicketsController.create);
@@ -42,29 +37,21 @@ router.put(
     PermissionsController.verifyAdminUsers,
     TicketsController.closeTicket
 );
-//  router.get('/api/tickets/closed', TicketsController.getAllClosed);
 
 // ! USERS
+router.get('/api/user', UsersController.getProfile);
 router.get(
     '/api/users',
     PermissionsController.verifyAdminUsers,
     UsersController.getAll
 );
-router.get(
-    '/api/users/:id',
-    // PermissionsController.verifyAdminUsers,
-    UsersController.getById
-);
+router.get('/api/users/:id', UsersController.getById);
 router.post(
     '/api/users',
     PermissionsController.verifyAdminUsers,
     UsersController.createUser
 );
-router.post(
-    '/api/users/changePassword',
-    // PermissionsController.verifyAdminUsers,
-    UsersController.changePassword
-);
+router.post('/api/users/changePassword', UsersController.changePassword);
 router.put(
     '/api/users/:id',
     PermissionsController.verifyAdminUsers,
@@ -77,16 +64,8 @@ router.delete(
 );
 
 // ! COMPANIES
-router.get(
-    '/api/companies',
-    // PermissionsController.verifyAdminUsers,
-    CompanyController.getAll
-);
-router.get(
-    '/api/companies/:id',
-    // PermissionsController.verifyAdminUsers,
-    CompanyController.getById
-);
+router.get('/api/companies', CompanyController.getAll);
+router.get('/api/companies/:id', CompanyController.getById);
 router.post(
     '/api/companies',
     PermissionsController.verifyAdminUsers,
