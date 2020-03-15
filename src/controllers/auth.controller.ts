@@ -54,13 +54,12 @@ class AuthController {
                     encPassword
                 );
 
-                // if (userId) {
-                //     const token = await AuthRepository.attemptLogin(
-                //         email,
-                //         encPassword
-                //     );
-                //     return res.json({ token });
-                // }
+                if (userId) {
+                    return res.json({
+                        message:
+                            'registration sucessful. Please wait for your account activation.'
+                    });
+                }
             }
 
             return res.status(400).json({ error: 'user already exists' });
