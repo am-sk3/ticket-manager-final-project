@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import AuthRepository from '../repositories/auth.repository';
 import { createHash } from 'crypto';
+import Users from '../schemas/users.schema';
 
 class AuthController {
     public static async login(req: Request, res: Response): Promise<Response> {
@@ -41,21 +42,28 @@ class AuthController {
                 .update(password)
                 .digest('hex');
 
-            const userId = await AuthRepository.register(
-                name,
-                email,
-                encPassword
-            );
+            const userVerification = await Users.query()
+                .select('id')
+                .where('email', email)
+                .first();
 
-            if (userId) {
-                const token = await AuthRepository.attemptLogin(
+            if (!userVerification) {
+                const userId = await AuthRepository.register(
+                    name,
                     email,
                     encPassword
                 );
-                return res.json({ token });
+
+                // if (userId) {
+                //     const token = await AuthRepository.attemptLogin(
+                //         email,
+                //         encPassword
+                //     );
+                //     return res.json({ token });
+                // }
             }
 
-            return res.status(400).json();
+            return res.status(400).json({ error: 'user already exists' });
         } catch (error) {
             if (error.code == 'ECONNREFUSED') {
                 error.message = 'Error connecting to DB';
