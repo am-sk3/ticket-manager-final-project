@@ -139,15 +139,32 @@ class CompanyController {
         const { userId } = req.body;
 
         try {
+            if (userId == undefined || parseInt(userId) === 0) {
+                throw new Error('Field userId is mandatory');
+            }
+            if (parseInt(id) === 0) {
+                throw new Error('Invalid Ticket ID');
+            }
+
             // * If an error is returned, it's probably a duplicate
-            const query = await CompanyRepository.addUser(
+            const userVerification = await CompanyRepository.searchByUser(
                 Number(id),
                 Number(userId)
             );
 
+            if (!userVerification) {
+                const query = await CompanyRepository.addUser(
+                    Number(id),
+                    Number(userId)
+                );
+
+                return res
+                    .status(201)
+                    .json({ message: 'User was added to the company' });
+            }
             return res
-                .status(201)
-                .json({ message: 'user was added to the company' });
+                .status(400)
+                .json({ message: 'User already belongs to the Company' });
         } catch (error) {
             if (error.code == 'ECONNREFUSED') {
                 error.message = 'Error connecting to DB';
