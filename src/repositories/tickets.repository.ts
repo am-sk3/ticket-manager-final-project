@@ -42,7 +42,6 @@ export default class TicketsRepository {
             .select()
             .where({
                 id: ticketId
-                // 'id', '=', ticketId,'is_deleted'
             })
             .andWhere('is_deleted', isDeleted)
             .first();
@@ -86,8 +85,6 @@ export default class TicketsRepository {
         ticket: Ticket,
         ticketId: number
     ): Promise<Number> {
-        // console.log(ticketId);
-        // console.log(ticket);
         return Tickets.query()
             .findById(ticketId)
             .patch(ticket);
@@ -130,13 +127,5 @@ export default class TicketsRepository {
                 lastUpdateUser: userId,
                 closedDate: moment().toDate()
             });
-        // return queryBuilder('tickets')
-        //     .where({id: ticketId})
-        //     .update({
-        //         status: 'Closed',
-        //         closed_date: moment().format('YYYY-MM-DD h:mm:ss'),
-        //         last_update_user: userId,
-        //         last_update:  moment().format('YYYY-MM-DD h:mm:ss')
-        //     })
     }
 }

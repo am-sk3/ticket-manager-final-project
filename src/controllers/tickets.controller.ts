@@ -2,6 +2,8 @@ import { Request, Response } from 'express';
 import TicketsRepository from '../repositories/tickets.repository';
 import Ticket from '../models/Ticket';
 import { now } from 'moment';
+import CompaniesRepository from '../repositories/companies.repository';
+import { isUndefined } from 'util';
 
 class TicketsController {
     public async getAll(req: Request, res: Response): Promise<Response> {
@@ -15,7 +17,10 @@ class TicketsController {
                 tickets = await TicketsRepository.getAllTickets();
             }
 
-            return res.status(200).json(tickets);
+            if (tickets && Object.keys(tickets).length > 0) {
+                return res.status(200).json(tickets);
+            }
+            return res.status(201).json({ error: 'No tickets found' });
         } catch (error) {
             if (error.code == 'ECONNREFUSED') {
                 error.message = 'Error connecting to DB';
@@ -30,20 +35,35 @@ class TicketsController {
     }
 
     public async create(req: Request, res: Response): Promise<Response> {
-        const ticket = new Ticket(req.body);
-        ticket.idUser = res.locals.decodedToken.user_id;
-        ticket.lastUpdateUser = res.locals.decodedToken.user_id;
-
         try {
+            const ticket = new Ticket(req.body);
+            ticket.idUser = res.locals.decodedToken.user_id;
+            ticket.lastUpdateUser = res.locals.decodedToken.user_id;
+
+            if (ticket.idCompany !== undefined && ticket.idUser !== undefined) {
+                const companyValidation = await CompaniesRepository.searchByUser(
+                    ticket.idCompany,
+                    ticket.idUser
+                );
+
+                if (!companyValidation) {
+                    return res.status(401).json({ error: 'Invalid company' });
+                }
+            }
             const query = await TicketsRepository.createTicket(ticket);
 
-            return res.status(201).json({ message: 'ticket created', query });
+            return res.status(201).json({
+                message: `ticket created with id ${query.id}`
+            });
         } catch (error) {
             if (error.code == 'ECONNREFUSED') {
                 error.message = 'Error connecting to DB';
                 return res.status(500).json({
                     error: error.message
                 });
+            }
+            if (error.code == 'ER_BAD_FIELD_ERROR') {
+                error.message = 'Validation error. Unknown parameter';
             }
             return res.status(400).json({
                 error: error.message
@@ -85,22 +105,119 @@ class TicketsController {
     }
 
     public async updateTicket(req: Request, res: Response): Promise<Response> {
-        const ticket = new Ticket(req.body);
-        ticket.lastUpdateUser = res.locals.decodedToken.user_id;
-
         try {
-            const query = await TicketsRepository.update(
-                ticket,
-                Number(req.params.id)
-            );
+            const { id } = req.params;
 
-            if (query === 1) {
-                return res.status(200).json({
-                    message: [`Ticket ${Number(req.params.id)} updated`]
-                });
+            // * verification if ticket exists
+            if (parseInt(id) > 0 && id !== undefined) {
+                const ticketVerification = await TicketsRepository.getOneTicket(
+                    Number(id)
+                );
+
+                if (ticketVerification && ticketVerification.idCompany) {
+                    // * if it's not an admin user
+                    const { user_id } = res.locals.decodedToken;
+                    if (res.locals.decodedToken.isAdmin === false) {
+                        // * verify if user belongs to the company
+
+                        const companyValidation = await CompaniesRepository.searchByUser(
+                            ticketVerification.idCompany,
+                            user_id
+                        );
+
+                        if (companyValidation) {
+                            let subject = req.body.subject;
+                            let content = req.body.content;
+
+                            if (subject === undefined) {
+                                subject = ticketVerification.subject;
+                            }
+                            if (content === undefined) {
+                                content = ticketVerification.content;
+                            }
+
+                            const idCompany = ticketVerification.idCompany;
+
+                            const ticket = new Ticket({
+                                id: Number(id),
+                                idUser: Number(user_id),
+                                idCompany,
+                                subject,
+                                content
+                            });
+
+                            // ticket.idUser = user_id;
+
+                            const query = await TicketsRepository.update(
+                                ticket,
+                                Number(req.params.id)
+                            );
+
+                            if (query === 1) {
+                                return res.status(200).json({
+                                    message: `Ticket ${Number(
+                                        req.params.id
+                                    )} updated`
+                                });
+                            }
+                        }
+                    } else {
+                        let subject = req.body.subject;
+                        let content = req.body.content;
+                        let idCompany = req.body.idCompany;
+
+                        if (subject === undefined) {
+                            subject = ticketVerification.subject;
+                        }
+                        if (content === undefined) {
+                            content = ticketVerification.content;
+                        }
+                        if (idCompany === undefined) {
+                            idCompany = ticketVerification.idCompany;
+                        }
+
+                        // const idCompany = ticketVerification.idCompany;
+                        const companyValidation = await CompaniesRepository.byId(
+                            Number(idCompany),
+                            true
+                        );
+                        if (Object.keys(companyValidation).length > 0) {
+                            const ticket = new Ticket({
+                                id: Number(id),
+                                idUser: Number(user_id),
+                                idCompany,
+                                subject,
+                                content
+                            });
+
+                            // ticket.idUser = user_id;
+
+                            const query = await TicketsRepository.update(
+                                ticket,
+                                Number(req.params.id)
+                            );
+
+                            if (query === 1) {
+                                return res.status(200).json({
+                                    message: `Ticket ${Number(
+                                        req.params.id
+                                    )} updated`
+                                });
+                            }
+                        }
+                        return res.status(400).json({
+                            message: 'Invalid Company ID!'
+                        });
+                    }
+
+                    // console.log(ticket);
+                    // if (ticketVerification) {
+
+                    // }
+                }
             }
-            return res.status(200).json({
-                message: 'Ticket not updated!'
+            return res.status(400).json({
+                message: 'Invalid Ticket!'
             });
         } catch (error) {
             if (error.code == 'ECONNREFUSED') {
@@ -112,10 +229,7 @@ class TicketsController {
             return res.status(400).json({
                 error: error.message
             });
-            // res.json({ message: error });
         }
-
-        // return res.json();
     }
 
     public async removeTicket(req: Request, res: Response): Promise<Response> {
@@ -153,19 +267,32 @@ class TicketsController {
     }
 
     public async createComment(req: Request, res: Response): Promise<Response> {
-        const { content, id_ticket } = req.body;
-        const { user_id } = res.locals.decodedToken;
-        // console.log('here');
+        const { id } = req.params;
+        const idTicket = Number(id);
+        const { content } = req.body;
+        const { user_id, isAdmin } = res.locals.decodedToken;
         try {
+            // console.log('here');
+            if (isAdmin == false) {
+                const ticketVerification = await TicketsRepository.getOneTicketUser(
+                    idTicket,
+                    user_id
+                );
+
+                if (!ticketVerification) {
+                    return res.status(400).json({ error: 'Invalid ticket' });
+                }
+            }
             const commentId = await TicketsRepository.comment(
                 content,
                 user_id,
-                id_ticket
+                idTicket
             );
+            // console.log(commentId);
             if (commentId) {
-                await TicketsRepository.update({ status: 'Open' }, id_ticket);
+                await TicketsRepository.update({ status: 'Open' }, idTicket);
                 return res.status(200).json({
-                    message: [`Comment with ID ${commentId} created.`]
+                    message: `Comment with ID ${commentId.id} created.`
                 });
             }
         } catch (error) {

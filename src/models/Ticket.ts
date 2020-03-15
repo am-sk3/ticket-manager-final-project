@@ -1,5 +1,3 @@
-import moment = require('moment');
-
 class Ticket {
     id?: number;
 
@@ -15,7 +13,7 @@ class Ticket {
 
     closedDate?: Date;
 
-    idCompany?: number = undefined;
+    idCompany?: number;
 
     isDeleted?: boolean;
 
@@ -30,14 +28,36 @@ class Ticket {
         this.creationDate = bodyParams.creationDate;
         this.idUser = bodyParams.idUser;
         this.closedDate = bodyParams.closedDate;
-        this.idCompany = Number(bodyParams.idCompany);
         this.isDeleted = bodyParams.isDeleted;
         this.lastUpdateUser = bodyParams.lastUpdateUser;
         this.lastUpdate = bodyParams.lastUpdate;
 
-        // moment().format('YYYY-MM-DD h:mm:ss');
-        if (Number.isInteger(bodyParams.idCompany) === true) {
+        // console.log(bodyParams.idCompany);
+        // if (
+        //     parseInt(bodyParams.id) > 0 &&
+        //     bodyParams.id != '0' &&
+        //     isNaN(bodyParams.id) === false
+        // ) {
+        //     this.id = Number(bodyParams.id);
+        // } else {
+        //     throw new Error('Field idCompany cannot be empty');
+        // }
+        if (
+            parseInt(bodyParams.idCompany) > 0 &&
+            bodyParams.idCompany != '0' &&
+            isNaN(bodyParams.idCompany) === false
+        ) {
             this.idCompany = Number(bodyParams.idCompany);
+        } else {
+            throw new Error('Field idCompany cannot be empty');
+        }
+
+        if (bodyParams.subject == '' || bodyParams.subject === undefined) {
+            throw new Error('Field subject cannot be empty');
+        }
+
+        if (bodyParams.content == '' || bodyParams.subject === undefined) {
+            throw new Error('Field content cannot be empty');
         }
     }
 }

@@ -84,7 +84,7 @@ router.get(
 );
 router.get(
     '/api/companies/:id',
-    PermissionsController.verifyAdminUsers,
+    // PermissionsController.verifyAdminUsers,
     CompanyController.getById
 );
 router.post(
