@@ -7,7 +7,6 @@ export default class CompaniesRepository {
         isAdmin: boolean = false
     ): Promise<Companies[]> {
         let query;
-        console.log(isAdmin);
         if (isAdmin === false) {
             query = Companies.query()
                 .select('id', 'name')
