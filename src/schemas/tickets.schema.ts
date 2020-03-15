@@ -1,6 +1,7 @@
 import { Model, snakeCaseMappers } from 'objection';
 import Users from './users.schema';
 import Company from './companies.schema';
+import Comments from './comments.schema';
 
 class Tickets extends Model {
     id?: number;
@@ -62,6 +63,14 @@ class Tickets extends Model {
                 join: {
                     from: 'ticket.id_company',
                     to: 'companies.id'
+                }
+            },
+            comments: {
+                relation: Model.HasManyRelation,
+                modelClass: Comments,
+                join: {
+                    from: 'tickets.id',
+                    to: 'comments.id_ticket'
                 }
             }
         };

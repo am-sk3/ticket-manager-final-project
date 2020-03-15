@@ -30,7 +30,6 @@ export default class TicketsRepository {
                     .select('id')
                     .for(userId)
             );
-        // console.log(query);
         return query;
     }
 
@@ -51,30 +50,40 @@ export default class TicketsRepository {
         ticketId: number,
         userId: number
     ): Promise<Tickets> {
-        return Tickets.query()
-            .select(
-                'id',
-                'subject',
-                'content',
-                'id_user',
-                'creation_date',
-                'status',
-                'closed_date',
-                'id_company',
-                'last_update_user',
-                'last_update'
-            )
-            .where({
-                id: ticketId
-            })
-            .andWhere('is_deleted', false)
-            .whereIn(
-                'id_company',
-                Users.relatedQuery('companies')
-                    .select('id')
-                    .for(userId)
-            )
-            .first();
+        return (
+            Tickets.query()
+                .select(
+                    'id',
+                    'subject',
+                    'content',
+                    'id_user',
+                    'creation_date',
+                    'status',
+                    'closed_date',
+                    'id_company',
+                    'last_update_user',
+                    'last_update'
+                )
+                .where('is_deleted', false)
+                .findById(Number(ticketId))
+                // .where({
+                //     id: ticketId
+                // })
+                // .andWhere('is_deleted', false)
+                .whereIn(
+                    'id_company',
+                    Users.relatedQuery('companies')
+                        .select('id')
+                        .for(userId)
+                )
+
+                .withGraphFetched('comments(select)')
+                .modifiers({
+                    select(builder) {
+                        builder.select();
+                    }
+                })
+        );
     }
 
     public static async createTicket(ticket: Ticket): Promise<Tickets> {

@@ -14,7 +14,6 @@ class AuthController {
 
             return res.json({ token });
         } catch (error) {
-            // console.log(err);
             if (error.code == 'ECONNREFUSED') {
                 error.message = 'Error connecting to DB';
                 return res.status(500).json({

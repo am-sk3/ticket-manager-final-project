@@ -39,8 +39,8 @@ class Comments extends Model {
                 relation: Model.BelongsToOneRelation,
                 modelClass: Tickets,
                 join: {
-                    from: 'tickets.id_user',
-                    to: 'users.id'
+                    from: 'comments.id_ticket',
+                    to: 'tickets.id'
                 }
             }
         };

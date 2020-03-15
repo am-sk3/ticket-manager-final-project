@@ -48,7 +48,6 @@ export default class TokenMiddleware {
                 },
                 secret
             );
-            // console.log(res.locals.tokenRefresh);
             return next();
         } catch (err) {
             return res.status(403).json({

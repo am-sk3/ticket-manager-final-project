@@ -78,7 +78,7 @@ export default class MailRepository {
             for (const mail of messages) {
                 const message = await mailparser.simpleParser(mail['body[]']);
 
-                const emailId: string = mail.uid; // console.log(mail.uid);
+                const emailId: string = mail.uid;
                 const from = message.from.value[0];
 
                 // * deletes all messages that start with the same system email
@@ -129,14 +129,7 @@ export default class MailRepository {
                         });
                         continue;
                     }
-                    // }
-                    // console.log(userCheck);
-                    // if (userCheck === undefined) {
-                    //     console.log(
-                    //         'user does not have companies associated. Skipping...'
-                    //     );
-                    //     continue;
-                    // }
+
                     // console.log(userCheck);
                     let ticketParse;
                     try {
