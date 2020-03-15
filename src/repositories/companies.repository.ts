@@ -35,7 +35,7 @@ export default class CompaniesRepository {
                 .withGraphFetched('users(selectInfo)')
                 .modifiers({
                     selectInfo(builder) {
-                        builder.select('id', 'name', 'email', 'created_at');
+                        builder.select();
                     }
                 })
                 .withGraphFetched('tickets(showOpen)')
