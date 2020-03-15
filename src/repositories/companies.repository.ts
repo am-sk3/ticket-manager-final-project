@@ -7,14 +7,18 @@ export default class CompaniesRepository {
         isAdmin: boolean = false
     ): Promise<Companies[]> {
         let query;
+        console.log(isAdmin);
         if (isAdmin === false) {
             query = Companies.query()
                 .select('id', 'name')
                 .where({ id: companyId })
+                .andWhere('is_deleted', false)
                 .withGraphFetched('users(selectInfo)')
                 .modifiers({
                     selectInfo(builder) {
-                        builder.select('id', 'name', 'email', 'created_at');
+                        builder
+                            .select('id', 'name', 'email', 'created_at')
+                            .where({ is_enabled: true });
                     }
                 })
                 .withGraphFetched('tickets(showOpen)')
@@ -32,9 +36,7 @@ export default class CompaniesRepository {
                 .withGraphFetched('users(selectInfo)')
                 .modifiers({
                     selectInfo(builder) {
-                        builder
-                            .select('id', 'name', 'email', 'created_at')
-                            .where({ is_enabled: false });
+                        builder.select('id', 'name', 'email', 'created_at');
                     }
                 })
                 .withGraphFetched('tickets(showOpen)')

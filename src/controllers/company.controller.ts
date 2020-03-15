@@ -25,8 +25,6 @@ class CompanyController {
                     .json({ tokenRefresh, error: error.message });
             }
             return res.status(400).json({ tokenRefresh, error: error.message });
-
-            // console.log(allCompanies);
         }
     }
 
@@ -43,10 +41,12 @@ class CompanyController {
                 if (isCompanyUser) {
                     const query = await CompanyRepository.byId(Number(id));
 
-                    if (query) {
-                        return res.status(200).json({ message: query });
+                    if (Object.keys(query).length > 0) {
+                        return res
+                            .status(200)
+                            .json({ tokenRefresh, message: query });
                     }
-                    return res.status(201).json({ error: 'Unknown company' });
+                    // return res.status(201).json({ error: 'Unknown company' });
                 }
                 return res.status(401).json({ error: 'Forbidden' });
             }
@@ -62,14 +62,11 @@ class CompanyController {
             }
             return res.status(400).json({ tokenRefresh, error: error.message });
         }
-        // const users = await CompanyRepository.getAllUsers(Number(id));
     }
 
     public async create(req: Request, res: Response): Promise<Response> {
         const { tokenRefresh } = res.locals;
         const { name } = req.body;
-        // const [companyId] = await CompanyRepository.create(name);
-        // console.log(query);
         try {
             const company = await CompanyRepository.create(name);
             return res.status(201).json({ tokenRefresh, message: company });
@@ -157,19 +154,15 @@ class CompanyController {
                     Number(userId)
                 );
 
-                return res
-                    .status(201)
-                    .json({
-                        tokenRefresh,
-                        message: 'User was added to the company'
-                    });
-            }
-            return res
-                .status(400)
-                .json({
+                return res.status(201).json({
                     tokenRefresh,
-                    message: 'User already belongs to the Company'
+                    message: 'User was added to the company'
                 });
+            }
+            return res.status(400).json({
+                tokenRefresh,
+                message: 'User already belongs to the Company'
+            });
         } catch (error) {
             if (error.code == 'ECONNREFUSED') {
                 error.message = 'Error connecting to DB';
@@ -200,12 +193,10 @@ class CompanyController {
             );
 
             // * hide status from response, not needed.
-            return res
-                .status(202)
-                .json({
-                    tokenRefresh,
-                    message: 'user was deleted from company'
-                });
+            return res.status(202).json({
+                tokenRefresh,
+                message: 'user was deleted from company'
+            });
         } catch (error) {
             if (error.code == 'ECONNREFUSED') {
                 error.message = 'Error connecting to DB';
