@@ -2,6 +2,7 @@
 import { Request, Response } from 'express';
 import UsersRepository from '../repositories/users.repository';
 import User from '../models/User';
+import { createHash } from 'crypto';
 
 class UsersController {
     public async getAll(req: Request, res: Response): Promise<Response> {
@@ -77,6 +78,11 @@ class UsersController {
          * verification for non admin users
          * only admins can change password from this service.
          */
+        if (user.password !== undefined) {
+            user.password = createHash('sha256')
+                .update(user.password)
+                .digest('hex');
+        }
         if (res.locals.decodedToken.isAdmin == false) {
             user.isAdmin = undefined;
             user.isEnabled = undefined;
@@ -133,10 +139,13 @@ class UsersController {
         const { newPassword } = req.body;
 
         const userId = res.locals.decodedToken.user_id;
+        const encPassword = createHash('sha256')
+            .update(newPassword)
+            .digest('hex');
         try {
             const query = await UsersRepository.changePassword(
                 userId,
-                newPassword
+                encPassword
             );
 
             return res.json({ tokenRefresh, message: 'Password changed!' });
